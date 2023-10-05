@@ -71,7 +71,6 @@ function Topology() {
 			// 	.style('padding', 10)
 			// 	.style('background', 'pink')
 
-			// ing
 			// .call(d3.drag<any, any>())
 			
 			.selectAll('rect')
