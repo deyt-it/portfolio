@@ -1,15 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import App from './App.tsx'
 import ErrorPage from './error-page.tsx'
-import './index.css'
 import Topology from './Topology.tsx'
+import MainView from './views/main/MainView.tsx'
 
 
 const router = createBrowserRouter([
 	{
 		path: '/', 
-		element: <App />, 
+		element: <MainView />, 
 		errorElement: <ErrorPage />
 	}, 
 	{
