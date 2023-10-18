@@ -1,14 +1,69 @@
+.main-container{
+	color: #333;
+}
 
 // project-desc
 .project-desc{
-	.period{}
-	.technologies{}
-	.detail{
-		li{
-			p{}
+	.period{
+		.year{
+			font-size: 34px;
 		}
-		.title{}
-		.content{}
+		.month{
+			padding-left: 3px;
+			font-size: 24px;
+		}
+		.dashed{
+			position: relative;
+			top: -4px;
+			padding: 0 6px;
+			font-size: 22px;
+		}
 	}
-	.link{}
+	.technologies{
+		display: inline-flex;
+		row-gap: 4px;
+		column-gap: 7px;
+		margin-top: 18px;
+		li{
+			padding: 0 6px;
+			line-height: 24px;
+			font-size: 16px;
+			background-color: #e0e0e0;
+		}
+	}
+	.details{
+		margin-top: 46px;
+		li{
+			display: grid;
+			grid-template-columns: 100px 1fr;
+			&:not(:first-child){
+				margin-top: 8px;
+			}
+			p{
+				line-height: 27px;
+			}
+		}
+		.title{
+			font-size: 18px;
+			font-weight: bold;
+		}
+		.content{
+			font-size: 16px;
+		}
+	}
+	.link{
+		display: flex;
+		align-items: center;
+		margin-top: 12px;
+		.ico{
+			padding-right: 4px;
+			font-size: 16px;
+			color: #929292;
+		}
+		a{
+			font-size: 14px;
+			color: #295ADD;
+			text-decoration: underline;
+		}
+	}
 }

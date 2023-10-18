@@ -1,9 +1,11 @@
 import '../../assets/styles/main.scss';
+import { FiLink2 } from 'react-icons/fi';
+import { dateUtils } from "../../utils/dateUtils";
 
 interface Props {
 	period: {
-		start: number, 
-		end: number, 
+		start: Date, 
+		end: Date, 
 	}, 
 	technologies: Array<string>, 
 	details: Array<Detail>, 
@@ -16,16 +18,18 @@ interface Detail {
 
 
 export default function MainProjectDesc(props: Props){
-	// 수정필요
-	const startDate = new Date(props.period.start)
-	const startYear = startDate.getFullYear()
-	const startMonthTmp = "00"+startDate.getMonth()+1
-	const startMonth = startMonthTmp.slice(-2, startMonthTmp.length)
-
-	const endDate = new Date(props.period.end)
-	const endYear = endDate.getFullYear()
-	const endMonthTmp = "00"+endDate.getMonth()+1
-	const endMonth = endMonthTmp.slice(-2, endMonthTmp.length)
+	const startStr = props.period.start.toISOString()
+	const startYear = startStr.split('-')[0]
+	const startMonth = startStr.split('-')[1]
+	const endStr = props.period.end.toISOString()
+	const endYear = endStr.split('-')[0]
+	const endMonth = endStr.split('-')[1]
+	// const startDate = dateUtils.getStringsFromTimestamp(props.period.start)
+	// const startYear = startDate[0]
+	// const startMonth = startDate[1]
+	// const endDate = dateUtils.getStringsFromTimestamp(props.period.end)
+	// const endYear = endDate[0]
+	// const endMonth = endDate[1]
 
 	return (
 		<div className="project-desc">
@@ -36,14 +40,14 @@ export default function MainProjectDesc(props: Props){
 				<span className="year">{endYear}</span>
 				<span className="month">/{endMonth}</span>
 			</p>
-			<p className="technologies">
+			<ul className="technologies">
 				{
 					props.technologies.map(technology => 
-						<span>{technology}</span>
+						<li>{technology}</li>
 					)
 				}
-			</p>
-			<ul className="detail">
+			</ul>
+			<ul className="details">
 				{
 					props.details.map(detail => 
 						<li>
@@ -53,9 +57,12 @@ export default function MainProjectDesc(props: Props){
 					)
 				}
 			</ul>
-			<a href={props.link} target="_blank" className="link">
-				{props.link}
-			</a>
+			<p className="link">
+				<FiLink2 className="ico" />
+				<a href={props.link} target="_blank">
+					{props.link}
+				</a>
+			</p>
 		</div>
 	)
 }
