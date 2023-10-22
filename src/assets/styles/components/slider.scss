@@ -1,0 +1,30 @@
+.slider-container{
+	position: relative;
+
+	.viewport{
+		overflow: hidden;
+		position: relative;
+		ul{
+			overflow: hidden;
+		}
+		li{
+			float: left;
+		}
+	}
+	.nav-buttons{
+		button{
+			&.prev{
+			}
+			&.next{
+			}
+		}
+	}
+	.pagination{
+		display: flex;
+		column-gap: 4px;
+		li{}
+	}
+	.thumbnails{
+		li{}
+	}
+}

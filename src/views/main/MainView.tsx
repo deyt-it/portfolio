@@ -1,8 +1,17 @@
-import MainProjectDesc from './MainProjectDesc'
+import Slider from '../../components/Slider';
+import MainProjectDesc from './MainProjectDesc';
 
 
 export default function MainView(){
-	const item = {
+	const sliderSetting = {
+		items: [
+			<div>1</div>, 
+			<div>2</div>, 
+			<div>3</div>, 
+		], 
+		thumbnails: true, 
+	}
+	const projectDesc = {
 		period: {
 			start: new Date('2021-03-01'), 
 			end: new Date('2022-04-01'), 
@@ -26,7 +35,8 @@ export default function MainView(){
 	}
 	return (
 		<div className="main-container">
-			<MainProjectDesc {...item} />
+			<Slider {...sliderSetting} />
+			<MainProjectDesc {...projectDesc} />
 		</div>
 	)
 }

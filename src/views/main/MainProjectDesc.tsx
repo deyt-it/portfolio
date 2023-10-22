@@ -1,6 +1,6 @@
 import '../../assets/styles/main.scss';
 import { FiLink2 } from 'react-icons/fi';
-import { dateUtils } from "../../utils/dateUtils";
+// import { dateUtils } from "../../utils/dateUtils";
 
 interface Props {
 	period: {
@@ -24,12 +24,6 @@ export default function MainProjectDesc(props: Props){
 	const endStr = props.period.end.toISOString()
 	const endYear = endStr.split('-')[0]
 	const endMonth = endStr.split('-')[1]
-	// const startDate = dateUtils.getStringsFromTimestamp(props.period.start)
-	// const startYear = startDate[0]
-	// const startMonth = startDate[1]
-	// const endDate = dateUtils.getStringsFromTimestamp(props.period.end)
-	// const endYear = endDate[0]
-	// const endMonth = endDate[1]
 
 	return (
 		<div className="project-desc">
@@ -43,14 +37,14 @@ export default function MainProjectDesc(props: Props){
 			<ul className="technologies">
 				{
 					props.technologies.map(technology => 
-						<li>{technology}</li>
+						<li key={technology}>{technology}</li>
 					)
 				}
 			</ul>
 			<ul className="details">
 				{
 					props.details.map(detail => 
-						<li>
+						<li key={detail.title}>
 							<p className="title">{detail.title}</p>
 							<p className="content">{detail.content}</p>
 						</li>
