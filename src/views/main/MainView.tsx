@@ -33,6 +33,7 @@ export default function MainView(){
 		], 
 		link: 'https://say015.com', 
 	}
+	
 	return (
 		<div className="main-container">
 			<Slider {...sliderSetting} />
