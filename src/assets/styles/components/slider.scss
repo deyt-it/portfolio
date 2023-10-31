@@ -6,7 +6,9 @@
 		position: relative;
 		ul{
 			overflow: hidden;
-			transition-duration: .2s;
+			&.animate{
+				transition: transform .4s;
+			}
 		}
 		li{
 			float: left;

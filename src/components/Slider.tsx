@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../assets/styles/components/slider.scss';
 
 interface Props {
@@ -20,8 +20,9 @@ export default function Slider({
 }: Props){
 	const sliderWrapRef = useRef<HTMLUListElement>(null)
 	const [indexActive, setIndexActive] = useState(0)
+	const [isRepositioned, setIsRepositioned] = useState(false)
 	
-	const indexMax = items.length*2 - 1
+	const slideLength = items.length
 	const widthValue: number = parseInt(width.replace(/[^0-9]/g, ''))
 	const widthUnit: string = width.replace(/\d/g, '')
 
@@ -29,22 +30,40 @@ export default function Slider({
 		items.map((item, i) => 
 			<li key={i} style={{width: width}}>{item}</li>
 		)
+	useEffect(()=>{
+		// 위치 재조정후, 슬라이드 이동 재개
+		// indexActive값으로 좌/우 버튼 구분
+		if (isRepositioned) {
+			sliderWrapRef.current!.classList.add('animate')
+			if (indexActive < slideLength) {
+				setIndexActive(indexActive + 1)
+			}else{
+				setIndexActive(indexActive - 1)
+				console.log(3);
+				
+			}
+			setIsRepositioned(false)
+		}
+	}, [isRepositioned])
+
 	const handleNav = (buttonName: string) => {
 		switch (buttonName) {
 			case 'prev':
 				if (indexActive==0) {
-					setIndexActive(indexMax)
-					// 뒤에 있던(?) 복제본을 떼어서 앞에 붙인다
-				}
-				else {
+					// 슬라이드 위치 재조정
+					// debugger
+					sliderWrapRef.current!.classList.remove('animate')
+					setIndexActive(indexActive + slideLength)
+					setTimeout(() => {
+						setIsRepositioned(true)
+					}, 0);
+				}else{
 					setIndexActive(indexActive-1)
 				}
-				// translateX -width 이동
-				// ul의 left값에 슬라이드너비*3을 뺀다
 				break;
 				
 				case 'next':
-				// translateX +width 이동
+				// translateX -width 이동
 				
 				break;
 		}
@@ -55,8 +74,15 @@ export default function Slider({
 	
 	return (
 		<div className="slider-container">
+			{widthValue*indexActive}
 			<div className="viewport" style={{width: width}}>
-				<ul ref={sliderWrapRef} style={{width: widthValue*items.length*2 + widthUnit}}>
+				<ul ref={sliderWrapRef}
+					className='animate'
+					style={{
+						width: widthValue*slideLength*2 + widthUnit, 
+						transform: `translateX(-${widthValue*indexActive + widthUnit})`, 
+					}}
+				>
 					{ renderSlides() }
 					{ renderSlides() }
 				</ul>
@@ -69,7 +95,7 @@ export default function Slider({
 				pagination &&
 				<ul className="pagination">
 					{
-						Array.from({length: items.length}, (_, i)=>
+						Array.from({length: slideLength}, (_, i)=>
 							<li key={i} onClick={()=>handlePagination(i)}>{i+1}</li>
 						)
 					}
