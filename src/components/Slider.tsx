@@ -19,32 +19,21 @@ export default function Slider({
 	// speed = 1000, 
 }: Props){
 	const sliderWrapRef = useRef<HTMLUListElement>(null)
-	const [indexActive, setIndexActive] = useState(0)
+	const [indexActive, setIndexActive] = useState(1)
 	const [isRepositioned, setIsRepositioned] = useState(false)
 	
 	const slideLength = items.length
+	const indexLast = slideLength-1 + 2 //앞뒤 하나씩 slide 2개 추가됨
 	const widthValue: number = parseInt(width.replace(/[^0-9]/g, ''))
 	const widthUnit: string = width.replace(/\d/g, '')
 
-	const renderSlides = () => 
-		items.map((item, i) => 
+	// 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다
+	const renderSlides = () => {
+		const slides = items.map((item, i) => 
 			<li key={i} style={{width: width}}>{item}</li>
 		)
-	useEffect(()=>{
-		// 위치 재조정후, 슬라이드 이동 재개
-		// indexActive값으로 좌/우 버튼 구분
-		if (isRepositioned) {
-			sliderWrapRef.current!.classList.add('animate')
-			if (indexActive < slideLength) {
-				setIndexActive(indexActive + 1)
-			}else{
-				setIndexActive(indexActive - 1)
-				console.log(3);
-				
-			}
-			setIsRepositioned(false)
-		}
-	}, [isRepositioned])
+		return [slides[slideLength-1], ...slides, slides[0]]
+	}
 
 	const handleNav = (buttonName: string) => {
 		switch (buttonName) {
@@ -63,11 +52,34 @@ export default function Slider({
 				break;
 				
 				case 'next':
-				// translateX -width 이동
+					if (indexActive==indexLast) {
+						// 슬라이드 위치 재조정
+						sliderWrapRef.current!.classList.remove('animate')
+						setIndexActive(indexActive - slideLength)
+						setTimeout(() => {
+							setIsRepositioned(true)
+						}, 0);
+					}else{
+						setIndexActive(indexActive+1)
+					}
 				
 				break;
 		}
 	}
+	useEffect(()=>{
+		// 위치 재조정후, 슬라이드 이동 재개
+		// indexActive값으로 좌/우 버튼 구분
+		if (isRepositioned) {
+			sliderWrapRef.current!.classList.add('animate')
+			if (indexActive < slideLength) {
+				setIndexActive(indexActive + 1)
+			}else{
+				setIndexActive(indexActive - 1)
+			}
+			setIsRepositioned(false)
+		}
+	}, [isRepositioned])
+
 	const handlePagination = (clickedIndex: number) => {
 		setIndexActive(clickedIndex)
 	}
@@ -83,7 +95,6 @@ export default function Slider({
 						transform: `translateX(-${widthValue*indexActive + widthUnit})`, 
 					}}
 				>
-					{ renderSlides() }
 					{ renderSlides() }
 				</ul>
 			</div>
