@@ -25,7 +25,14 @@
 	.pagination{
 		display: flex;
 		column-gap: 4px;
-		li{}
+		li{
+			&:not(.on){
+				cursor: pointer;
+			}
+			&.on{
+				color: red;
+			}
+		}
 	}
 	.thumbnails{
 		li{}
