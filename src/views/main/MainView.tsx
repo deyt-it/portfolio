@@ -1,13 +1,15 @@
 import Slider from '../../components/Slider';
 import MainProjectDesc from './MainProjectDesc';
+import imgTmp from '../../assets/images/img-tmp.jpg';
 
 
 export default function MainView(){
 	const sliderSetting = {
 		items: [
-			<div>1</div>, 
+			<img src={imgTmp} alt="" />, 
 			<div>2</div>, 
 			<div>3</div>, 
+			<div><div><ul><li>depth</li><li>depth!!</li></ul></div></div>
 		], 
 		thumbnails: true, 
 	}

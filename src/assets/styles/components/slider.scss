@@ -4,37 +4,71 @@
 	.viewport{
 		overflow: hidden;
 		position: relative;
-		ul{
-			overflow: hidden;
+		&>ul{
+			display: flex;
 			&.animate{
 				transition: transform .4s;
 			}
-		}
-		li{
-			float: left;
+			&>li{
+				display: flex;
+				min-height: 100px;
+				justify-content: center;
+				align-items: center;
+				background-color: #eee; //썸네일 생성시 필요
+			}
 		}
 	}
 	.nav-buttons{
 		button{
+			position: absolute;
+			top:50%;
+			display: block;
+			&::before{
+				display: block;
+				content: 'test';
+			}
 			&.prev{
+				left:0;
 			}
 			&.next{
+				right:0;
 			}
 		}
 	}
 	.pagination{
 		display: flex;
 		column-gap: 4px;
+		justify-content: center;
 		li{
 			&:not(.on){
 				cursor: pointer;
 			}
-			&.on{
+			&.on, 
+			&:hover{
 				color: red;
 			}
 		}
 	}
 	.thumbnails{
-		li{}
+		display: flex;
+		flex-wrap: wrap;
+		column-gap: 2px;
+		li{
+			width:25%;
+			box-sizing: border-box;
+			border: 1px solid transparent;
+
+			&:not(.on){
+				cursor: pointer;
+			}
+			&.on, 
+			&:hover{
+				border-color: red;
+			}
+			img{
+				display: block;
+				width: 100%;
+			}
+		}
 	}
 }
