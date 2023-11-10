@@ -1,9 +1,9 @@
-import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ReactElement, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { toJpeg } from 'html-to-image';
 import '../assets/styles/components/slider.scss';
 
 interface Props {
-	items: Array<React.ReactNode>, 
+	items: Array<ReactElement>, 
 	width?: string, 
 	pagination?: boolean, 
 	thumbnails?: boolean, 
@@ -31,6 +31,7 @@ export default function Slider({
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
 	let slideRefs: Array<RefObject<HTMLLIElement>> = []
+	// const [test, setTest] = useState(false)
 	const [thumbnailUrls, setThumbnailUrls] = useState(Array.from({length: itemLength}, ()=> ""))
 	const [indexActive, setIndexActive] = useState(1)
 	const indexActiveReal = useMemo(
@@ -48,6 +49,17 @@ export default function Slider({
 		console.log('renderSlides');
 		// 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다
 		const itemsClone = [items[itemLength-1], ...items, items[0]]
+
+		// itemsClone[1] = {
+		// 	...itemsClone[1], 
+		// 	props: {
+		// 		...itemsClone[1].props, 
+		// 		onLoad: ()=>setTest(true), 
+		// 		// onClick: ()=>{console.log('??????????????????')}
+		// 	}
+		// }
+		// console.log('ing..', itemsClone[1]);
+		
 		return (
 			itemsClone.map((item, i) => {
 				const attrs: any = {}
@@ -79,8 +91,11 @@ export default function Slider({
 			</li>
 		})
 
+	// createThumnails
 	useEffect(()=>{
 		console.log('useEffect');
+		// console.log('test', test);
+
 		if (thumbnails && slideRefs[itemLength-1].current) {
 			// 슬라이드 ref값 모두 있을시 썸네일 렌더링
 			// 슬라이드아이템이 이미지일 경우 로딩완료후 썸네일 생성
