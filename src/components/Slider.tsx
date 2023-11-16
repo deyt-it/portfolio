@@ -1,20 +1,8 @@
 import React, { ReactElement, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { toJpeg } from 'html-to-image';
 import '../assets/styles/components/slider.scss';
-
-interface Props {
-	items: Array<ReactElement>, 
-	width?: string, 
-	pagination?: boolean, 
-	thumbnails?: boolean, 
-	infinite?: boolean, 
-	// speed?: number, 
-}
-type Direction = -1 | 1
-interface MoveInfo {
-	direction: Direction, 
-	moveNum: number, 
-}
+import PaginationItem from './PaginationItem';
+import { ISliderProps as IProps, TDirection, IMoveInfo, 	IPaginationItemProps, TPaginationType } from './ISlider';
 
 export default function Slider({
 	items, 
@@ -23,14 +11,17 @@ export default function Slider({
 	thumbnails = false, 
 	infinite = true, 
 	// speed = 1000, 
-}: Props){
+}: IProps){
 	const itemLength = items.length
 	const indexLast = itemLength-1 + 2 //앞뒤 하나씩 슬라이드 2개 추가됨
 	const widthValue: number = parseInt(width.replace(/[^0-9]/g, ''))
 	const widthUnit: string = width.replace(/\d/g, '')
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
-	let slideRefs: Array<RefObject<HTMLLIElement>> = []
+	let slideRefs: Array<HTMLLIElement> = []
+	useEffect(()=> {
+		slideRefs = slideRefs.slice(0, itemLength)
+	}, [items])
 	// const [test, setTest] = useState(false)
 	const [thumbnailUrls, setThumbnailUrls] = useState(Array.from({length: itemLength}, ()=> ""))
 	const [indexActive, setIndexActive] = useState(1)
@@ -43,7 +34,7 @@ export default function Slider({
 		},
 		[indexActive]
 	)
-	const [reMoveInfo, setReMoveInfo] = useState<MoveInfo | null>(null)
+	const [reMoveInfo, setReMoveInfo] = useState<IMoveInfo | null>(null)
 
 	const renderSlides = () => {
 		console.log('renderSlides');
@@ -58,80 +49,71 @@ export default function Slider({
 		// 		// onClick: ()=>{console.log('??????????????????')}
 		// 	}
 		// }
-		// console.log('ing..', itemsClone[1]);
 		
 		return (
 			itemsClone.map((item, i) => {
 				const attrs: any = {}
-				if (i!=0 && i!=indexLast) {
-					const slideRef = useRef<HTMLLIElement>(null)
-					slideRefs.push(slideRef)
-					attrs.ref = slideRef
+				if (thumbnails && (i!=0 && i!=indexLast)) {
+					// 복제아이템 제외하고 썸네일 생성용 ref값 추가
+					// ing.. 아이템 순회해서 img있으면 ref값 붙이고 나오자
+
+					// const slideRef = useRef<HTMLLIElement>(null)
+					// slideRefs.push(slideRef)
+					attrs.ref = (node: HTMLLIElement) => slideRefs[i] = node
 					// attrs.className = 'ref'
 				}
+
 				return <li key={i} style={{width: width}} {...attrs}>{item}</li>
 			})
 		)
 	}
 	
-	const renderPagination = (type: 'page' | 'thumbnail') => 
-		Array.from({length: itemLength}, (_, i)=> {
-			let attrs: any = {}
-			if (i == indexActiveReal) {
-				attrs.className = 'on'
-			}else{
-				const direction = i - indexActiveReal < 0 ? -1 : 1
-				const moveNum = Math.abs(i - indexActiveReal)
-				attrs.onClick = ()=>handleNav(direction, moveNum)
-			}
-			return type=='page'
-			? <li key={i} {...attrs}>{i+1}</li>
-			: <li key={i} {...attrs}>
-				<img src={thumbnailUrls[i]} alt="" />
-			</li>
-		})
+		const renderPagination = (type: TPaginationType) => {
+			return Array.from({length: itemLength}, (_, i)=> {
+				let props: IPaginationItemProps = {
+					id: i, 
+					type: type, 
+					itemRef: slideRefs[i], 
+				}
+				if (i == indexActiveReal) {
+					props.className = 'on'
+				}else{
+					const direction = i - indexActiveReal < 0 ? -1 : 1
+					const moveNum = Math.abs(i - indexActiveReal)
+					props.onClick = ()=>handleNav(direction, moveNum)
+				}
+				
+				return <PaginationItem key={i} {...props} />
+			})
+		}
 
 	// createThumnails
-	useEffect(()=>{
-		console.log('useEffect');
-		// console.log('test', test);
+	// useEffect(()=>{
+	// 	console.log('useEffect');
+	// 	// console.log('test', test);
 
-		if (thumbnails && slideRefs[itemLength-1].current) {
-			// 슬라이드 ref값 모두 있을시 썸네일 렌더링
-			// 슬라이드아이템이 이미지일 경우 로딩완료후 썸네일 생성
-			console.log(1, slideRefs);
+	// 	if (thumbnails && slideRefs[itemLength-1].current) {
+	// 		// 슬라이드 ref값 모두 있을시 썸네일 렌더링
+	// 		console.log(1, slideRefs);
 			
-			slideRefs.map((slideRef, i) => {
-				toJpeg(slideRef.current!, {cacheBust: true})
-				.then(url => {
-					setThumbnailUrls((prev)=>{
-						const prevClone = [...prev]
-						prevClone[i] = url
-						return prevClone
-					})
-				})
-				.catch(e => {
-					console.log(e);
-				})
-			})
-
-			// Promise.all(
-			// 	slideRefs.map((slideRef, i) => {
-			// 		return toJpeg(slideRef.current!, {cacheBust: true})
-			// 		.then(url => url)
-			// 		.catch(e => {
-			// 			console.log(e);
-			// 		})
-			// 	})
-			// ).then((urls: Array<any>)=>{
-			// 	console.log('all', urls);
-			// 	setThumbnailUrls([...urls])
-			// })
-		}
+	// 		slideRefs.map((slideRef, i) => {
+	// 			toJpeg(slideRef.current!, {cacheBust: true})
+	// 			.then(url => {
+	// 				setThumbnailUrls((prev)=>{
+	// 					const prevClone = [...prev]
+	// 					prevClone[i] = url
+	// 					return prevClone
+	// 				})
+	// 			})
+	// 			.catch(e => {
+	// 				console.log(e);
+	// 			})
+	// 		})
+	// 	}
 		
-	}, [])
+	// }, [])
 
-	const handleNav = (direction: Direction, moveNum: number) => {
+	const handleNav = (direction: TDirection, moveNum: number) => {
 		if (
 			(direction == -1 && indexActive == 0)
 			|| (direction == 1 && indexActive == indexLast)
@@ -148,12 +130,12 @@ export default function Slider({
 		}
 	}
 
-	const rePosition = (direction: Direction) => {
+	const rePosition = (direction: TDirection) => {
 		// 방향에 따라 첫칸/끝칸 이동 여부가 정해지므로 direction 필요
 		sliderWrapRef.current!.classList.remove('animate')
 		setIndexActive(indexActive + itemLength*-direction)
 	}
-	const reMove = (direction: Direction, moveNum: number) => {
+	const reMove = (direction: TDirection, moveNum: number) => {
 		// useEffect를 통해 이동 애니메이션 재개
 		sliderWrapRef.current!.classList.add('animate')
 		setReMoveInfo({
@@ -168,6 +150,10 @@ export default function Slider({
 			setReMoveInfo(null)
 		}
 	}, [reMoveInfo])
+
+	// const test = {test: 1}
+	// useEffect(()=>{console.log('값변함');
+	// }, [test])
 	
 	return (
 		<div className="slider-container" style={{width: width}}>
