@@ -1,8 +1,8 @@
-import React, { ReactElement, RefObject, useEffect, useMemo, useRef, useState } from 'react';
-import { toJpeg } from 'html-to-image';
-import '../assets/styles/components/slider.scss';
-import PaginationItem from './PaginationItem';
+import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ISliderProps as IProps, TDirection, IMoveInfo, 	IPaginationItemProps, TPaginationType } from './ISlider';
+import PaginationItem from './PaginationItem';
+import '../assets/styles/components/slider.scss';
+import { hasElementType } from '../utils/elementUtills';
 
 export default function Slider({
 	items, 
@@ -18,12 +18,13 @@ export default function Slider({
 	const widthUnit: string = width.replace(/\d/g, '')
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
-	let slideRefs: Array<HTMLLIElement> = []
-	useEffect(()=> {
-		slideRefs = slideRefs.slice(0, itemLength)
-	}, [items])
+	let slideRefs: RefObject<Array<HTMLLIElement | null>> = useRef(
+		Array.from({length: itemLength}, ()=>null)
+	)
+	// const [slideRefs, setSlideRefs] = useState<Array<RefObject<HTMLLIElement> | null>>(
+	// 	Array.from({length: itemLength}, ()=>null)
+	// )
 	// const [test, setTest] = useState(false)
-	const [thumbnailUrls, setThumbnailUrls] = useState(Array.from({length: itemLength}, ()=> ""))
 	const [indexActive, setIndexActive] = useState(1)
 	const indexActiveReal = useMemo(
 		() => {//실제 item의 index
@@ -36,31 +37,49 @@ export default function Slider({
 	)
 	const [reMoveInfo, setReMoveInfo] = useState<IMoveInfo | null>(null)
 
+
+	useEffect(()=>{
+		console.log(2, slideRefs);
+		// ing.. node가 순차적으로 넘어와도 감지하지 못함
+		// ㄴ 그렇다고 하나하나 상태관리하면 무한렌더링됨ㅜ
+		
+	}, [slideRefs])
+	
+	useEffect(()=>{
+		if (reMoveInfo) {
+			setIndexActive(indexActive + reMoveInfo.moveNum*reMoveInfo.direction)
+			setReMoveInfo(null)
+		}
+	}, [reMoveInfo])
+
+
 	const renderSlides = () => {
 		console.log('renderSlides');
 		// 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다
 		const itemsClone = [items[itemLength-1], ...items, items[0]]
-
-		// itemsClone[1] = {
-		// 	...itemsClone[1], 
-		// 	props: {
-		// 		...itemsClone[1].props, 
-		// 		onLoad: ()=>setTest(true), 
-		// 		// onClick: ()=>{console.log('??????????????????')}
-		// 	}
-		// }
+		const setImgOnLoad = (el: ReactElement) => { //item의 img요소에 onLoad적용할 함수
+			return {...el,
+				props: {...el.props, 
+					alt: 'test', 
+					// 이미지 로드시 어떻게 썸네일에 알리지
+					// onLoad: ()=> slideRefs.current.push(node)
+				}
+			}
+		}
 		
 		return (
 			itemsClone.map((item, i) => {
 				const attrs: any = {}
 				if (thumbnails && (i!=0 && i!=indexLast)) {
-					// 복제아이템 제외하고 썸네일 생성용 ref값 추가
-					// ing.. 아이템 순회해서 img있으면 ref값 붙이고 나오자
-
-					// const slideRef = useRef<HTMLLIElement>(null)
-					// slideRefs.push(slideRef)
-					attrs.ref = (node: HTMLLIElement) => slideRefs[i] = node
-					// attrs.className = 'ref'
+					// 복제아이템 제외하고 ref, onLoad 추가
+					// item에 이미지 있는경우, 로드완료시 썸네일 생성하기 위해 필요
+					const imgElSetted = hasElementType(item, 'img', setImgOnLoad)
+					if (imgElSetted) {
+						// 이미지가 있는 item의 index값 저장해두었다가
+						// 로드완료시 썸네일 컴포넌트에 알려야함
+						item = imgElSetted
+					}
+					attrs.ref = (node: HTMLLIElement) => slideRefs.current![i] = node
 				}
 
 				return <li key={i} style={{width: width}} {...attrs}>{item}</li>
@@ -68,50 +87,26 @@ export default function Slider({
 		)
 	}
 	
-		const renderPagination = (type: TPaginationType) => {
-			return Array.from({length: itemLength}, (_, i)=> {
-				let props: IPaginationItemProps = {
-					id: i, 
-					type: type, 
-					itemRef: slideRefs[i], 
-				}
-				if (i == indexActiveReal) {
-					props.className = 'on'
-				}else{
-					const direction = i - indexActiveReal < 0 ? -1 : 1
-					const moveNum = Math.abs(i - indexActiveReal)
-					props.onClick = ()=>handleNav(direction, moveNum)
-				}
-				
-				return <PaginationItem key={i} {...props} />
-			})
-		}
-
-	// createThumnails
-	// useEffect(()=>{
-	// 	console.log('useEffect');
-	// 	// console.log('test', test);
-
-	// 	if (thumbnails && slideRefs[itemLength-1].current) {
-	// 		// 슬라이드 ref값 모두 있을시 썸네일 렌더링
-	// 		console.log(1, slideRefs);
-			
-	// 		slideRefs.map((slideRef, i) => {
-	// 			toJpeg(slideRef.current!, {cacheBust: true})
-	// 			.then(url => {
-	// 				setThumbnailUrls((prev)=>{
-	// 					const prevClone = [...prev]
-	// 					prevClone[i] = url
-	// 					return prevClone
-	// 				})
-	// 			})
-	// 			.catch(e => {
-	// 				console.log(e);
-	// 			})
-	// 		})
-	// 	}
+	const renderPagination = (type: TPaginationType) => {
+		console.log('renderPagination', type, slideRefs);
 		
-	// }, [])
+		return Array.from({length: itemLength}, (_, i)=> {
+			let props: IPaginationItemProps = {
+				id: i, 
+				type: type, 
+				...thumbnails && {itemRef: slideRefs.current![i]}, 
+			}
+			if (i == indexActiveReal) {
+				props.className = 'on'
+			}else{
+				const direction = i - indexActiveReal < 0 ? -1 : 1
+				const moveNum = Math.abs(i - indexActiveReal)
+				props.onClick = ()=>handleNav(direction, moveNum)
+			}
+			
+			return <PaginationItem key={i} {...props} />
+		})
+	}
 
 	const handleNav = (direction: TDirection, moveNum: number) => {
 		if (
@@ -144,19 +139,32 @@ export default function Slider({
 		})
 	}
 
-	useEffect(()=>{
-		if (reMoveInfo) {
-			setIndexActive(indexActive + reMoveInfo.moveNum*reMoveInfo.direction)
-			setReMoveInfo(null)
-		}
-	}, [reMoveInfo])
-
 	// const test = {test: 1}
 	// useEffect(()=>{console.log('값변함');
 	// }, [test])
+
+
+	// const [testVals, setTestVals] = useState<Array<HTMLElement|null>>([])
+	
+	// const test = useCallback((i: number) => (node: HTMLElement|null) => {
+	// 	console.log('before');
+		
+	// 	setTestVals(prev => {
+	// 		const prevClone = [...prev]
+	// 		prevClone[i] = node
+	// 		return prevClone
+	// 	})
+	// 	console.log('after');
+		
+	// }, [testVals])
 	
 	return (
 		<div className="slider-container" style={{width: width}}>
+			{/* {
+				[1,2,3].map((num: number, i)=>
+					<div key={i} ref={test(i)}>{num}</div>
+				)
+			} */}
 			{/* {indexActive} */}
 			<div className="relative">
 				<div className="viewport">

@@ -10,7 +10,8 @@ export default function MainView(){
 			<img src={imgTmp} alt="" />, 
 			<div style={{width: '200px', backgroundColor: 'pink'}}>2</div>, 
 			<div>3</div>, 
-			<div><div><ul><li>depth</li><li>depth!!</li></ul></div></div>
+			<div>3</div>, 
+			// <div><div><ul><li>depth</li><li><img src={imgTmp} alt="" /></li></ul></div></div>
 		], 
 		thumbnails: true, 
 	}
