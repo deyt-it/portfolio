@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import { IPaginationItemProps as IProps } from './ISlider';
 import { toJpeg } from 'html-to-image';
 import Loading from './Loading';
 
-export default function PaginationItem({id, type, className, onClick, itemRef}: IProps){
+export default forwardRef(function PaginationItem(
+	{id, type, className, onClick}: IProps, 
+	// itemRef: ForwardedRef<HTMLElement | null>
+	itemRef: any
+){
 	const [thumbnailUrl, setThumbnailUrl] = useState("")
 	console.log('[PaginationItem]', itemRef);
 	
@@ -33,4 +37,4 @@ export default function PaginationItem({id, type, className, onClick, itemRef}: 
 			}
 		</li>
 	)
-}
+})

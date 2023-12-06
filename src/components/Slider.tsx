@@ -144,19 +144,17 @@ export default function Slider({
 	// }, [test])
 
 
-	// const [testVals, setTestVals] = useState<Array<HTMLElement|null>>([])
+	// const testVals: {current: Array<HTMLElement|null>} = {current: []}
 	
-	// const test = useCallback((i: number) => (node: HTMLElement|null) => {
-	// 	console.log('before');
-		
-	// 	setTestVals(prev => {
-	// 		const prevClone = [...prev]
-	// 		prevClone[i] = node
-	// 		return prevClone
-	// 	})
-	// 	console.log('after');
+	// useEffect(()=>{
+	// 	console.log('[test] useEffect', testVals);
 		
 	// }, [testVals])
+	// const test = (i: number) => (node: HTMLElement|null) => {
+	// 	console.log('[test] fx');
+		
+	// 	testVals.current[i] = node
+	// }
 	
 	return (
 		<div className="slider-container" style={{width: width}}>
