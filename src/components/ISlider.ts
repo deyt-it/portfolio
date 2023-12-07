@@ -21,7 +21,7 @@ export interface IPaginationItemProps {
 	type: TPaginationType, 
 	className?: string, 
 	onClick?: ()=>void, 
-	itemRef?: HTMLElement | null, 
+	// itemRef?: HTMLElement | null, 
 }
 
 export type TPaginationType = 'page' | 'thumbnail'

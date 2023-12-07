@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 
-export const hasElementType = (el: ReactElement, type: string, setEl: (arg: ReactElement)=>ReactElement): (ReactElement | null) => {
+export const getElementByType = (el: ReactElement, type: string, setEl: (arg: ReactElement)=>ReactElement): (ReactElement | null) => {
 	// const props = ['props']
 	// console.log('?????', el[props[0] as keyof typeof el]);
 	
@@ -17,7 +17,7 @@ export const hasElementType = (el: ReactElement, type: string, setEl: (arg: Reac
 	if (Array.isArray(el.props.children)) {
 		for (let index = 0; index < el.props.children.length; index++) {
 			// 형제요소중 type조건 만나면 반복 종료
-			const elSetted = hasElementType(el.props.children[index], type, setEl)
+			const elSetted = getElementByType(el.props.children[index], type, setEl)
 			if (elSetted) {
 				const result = {...el, 
 					props: {...el.props, 
@@ -34,7 +34,7 @@ export const hasElementType = (el: ReactElement, type: string, setEl: (arg: Reac
 		return null
 
 	}else{
-		const elSetted = hasElementType(el.props.children, type, setEl)
+		const elSetted = getElementByType(el.props.children, type, setEl)
 		return elSetted
 		? {...el, 
 			props: {...el.props, 
@@ -57,7 +57,7 @@ export const hasElementType = (el: ReactElement, type: string, setEl: (arg: Reac
 	// if (Array.isArray(el.props.children)) {
 	// 	for (let index = 0; index < el.props.children.length; index++) {
 	// 		// 형제요소중 type조건 만나면 반복 종료
-	// 		const hasType = hasElementType(el.props.children[index], type)
+	// 		const hasType = getElementByType(el.props.children[index], type)
 	// 		if (hasType) {
 	// 			return true
 	// 		}
@@ -65,7 +65,7 @@ export const hasElementType = (el: ReactElement, type: string, setEl: (arg: Reac
 	// 	// children배열에 조건맞는 type이 없는 경우
 	// 	return false
 	// }else{
-	// 	return hasElementType(el.props.children, type)
+	// 	return getElementByType(el.props.children, type)
 	// }
 
 }

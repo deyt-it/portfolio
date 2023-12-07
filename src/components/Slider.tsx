@@ -2,7 +2,7 @@ import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef
 import { ISliderProps as IProps, TDirection, IMoveInfo, 	IPaginationItemProps, TPaginationType } from './ISlider';
 import PaginationItem from './PaginationItem';
 import '../assets/styles/components/slider.scss';
-import { hasElementType } from '../utils/elementUtills';
+import { getElementByType } from '../utils/elementUtills';
 
 export default function Slider({
 	items, 
@@ -18,12 +18,12 @@ export default function Slider({
 	const widthUnit: string = width.replace(/\d/g, '')
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
-	let slideRefs: RefObject<Array<HTMLLIElement | null>> = useRef(
-		Array.from({length: itemLength}, ()=>null)
-	)
-	// const [slideRefs, setSlideRefs] = useState<Array<RefObject<HTMLLIElement> | null>>(
+	// let slideRefs: RefObject<Array<HTMLLIElement | null>> = useRef(
 	// 	Array.from({length: itemLength}, ()=>null)
 	// )
+	const [slideRefs, setSlideRefs] = useState<{current: Array<HTMLElement|null>}>(
+		{current: Array.from({length: itemLength}, ()=>null)}
+	)
 	// const [test, setTest] = useState(false)
 	const [indexActive, setIndexActive] = useState(1)
 	const indexActiveReal = useMemo(
@@ -38,12 +38,6 @@ export default function Slider({
 	const [reMoveInfo, setReMoveInfo] = useState<IMoveInfo | null>(null)
 
 
-	useEffect(()=>{
-		console.log(2, slideRefs);
-		// ing.. node가 순차적으로 넘어와도 감지하지 못함
-		// ㄴ 그렇다고 하나하나 상태관리하면 무한렌더링됨ㅜ
-		
-	}, [slideRefs])
 	
 	useEffect(()=>{
 		if (reMoveInfo) {
@@ -55,35 +49,62 @@ export default function Slider({
 
 	const renderSlides = () => {
 		console.log('renderSlides');
-		// 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다
-		const itemsClone = [items[itemLength-1], ...items, items[0]]
-		const setImgOnLoad = (el: ReactElement) => { //item의 img요소에 onLoad적용할 함수
-			return {...el,
-				props: {...el.props, 
-					alt: 'test', 
-					// 이미지 로드시 어떻게 썸네일에 알리지
-					// onLoad: ()=> slideRefs.current.push(node)
+		let slides: any = <></>
+		if (thumbnails) {
+			// item의 img요소에 onLoad적용할 함수
+			// ㄴ 로드완료시 썸네일 생성하기 위해 필요
+			const setImgOnLoad = (el: ReactElement) => {
+				return {...el,
+					props: {...el.props, 
+						alt: 'test', 
+						// onLoad: ()=> slideRefs.current.push(node)
+					}
 				}
 			}
+			// ref callback 함수. 썸네일 생성에 필요
+			const onSlideRefUpdate = useCallback((node: HTMLElement|null, i: number)=>{
+				console.log('onSlideRefUpdate', node , i);
+				
+				if (!slideRefs.current[i] && node) {
+					setSlideRefs(prev => {
+						let prevClone = {...prev}
+						prevClone.current[i] = node
+						return prevClone
+					})
+				}
+			}, [slideRefs])
+			
+			useEffect(()=>{
+				console.log('onSlideRefUpdate is updated', slideRefs);
+				
+			}, [onSlideRefUpdate])
+
+			slides = items.map((item, i) =>{
+				// item 순회 함수. 이미지 없을시 null, 있을시 콜백함수적용한 item을 반환 
+				const itemSettedOnLoad = getElementByType(item, 'img', setImgOnLoad)
+				if (itemSettedOnLoad) {
+					item = itemSettedOnLoad
+				}
+				let attrs: any = {}
+				attrs.style = {width: width}
+				attrs.ref = (node: HTMLElement|null) => {onSlideRefUpdate(node, i)}
+	
+				return <li key={i} {...attrs}>{item}</li>
+			})
+		}
+		else{
+			slides = items.map((item, i) => {
+				<li key={i} style={{width: width}}>{item}</li>
+			})
 		}
 		
 		return (
-			itemsClone.map((item, i) => {
-				const attrs: any = {}
-				if (thumbnails && (i!=0 && i!=indexLast)) {
-					// 복제아이템 제외하고 ref, onLoad 추가
-					// item에 이미지 있는경우, 로드완료시 썸네일 생성하기 위해 필요
-					const imgElSetted = hasElementType(item, 'img', setImgOnLoad)
-					if (imgElSetted) {
-						// 이미지가 있는 item의 index값 저장해두었다가
-						// 로드완료시 썸네일 컴포넌트에 알려야함
-						item = imgElSetted
-					}
-					attrs.ref = (node: HTMLLIElement) => slideRefs.current![i] = node
-				}
-
-				return <li key={i} style={{width: width}} {...attrs}>{item}</li>
-			})
+			<>
+			{/* 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다 */}
+			<li style={{width: width}}>{items[itemLength-1]}</li>
+			{ slides }
+			<li style={{width: width}}>{items[0]}</li>
+			</>
 		)
 	}
 	
@@ -94,7 +115,7 @@ export default function Slider({
 			let props: IPaginationItemProps = {
 				id: i, 
 				type: type, 
-				...thumbnails && {itemRef: slideRefs.current![i]}, 
+				...thumbnails && {ref: slideRefs.current![i]}, 
 			}
 			if (i == indexActiveReal) {
 				props.className = 'on'
