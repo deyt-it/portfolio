@@ -8,6 +8,7 @@
 		position: relative;
 		&>ul{
 			display: flex;
+			height:100%;
 			&.animate{
 				transition: transform .4s;
 			}
@@ -52,16 +53,19 @@
 		}
 	}
 	.thumbnails{
-		$columnGap: 2px;
+		$columnGap: 3vw;
 
 		display: flex;
 		flex-wrap: wrap;
-		column-gap: $columnGap;
+		gap: calc($columnGap - 1vw) $columnGap;
+		height:12vw;
 		li{
+			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			width:calc(25% - $columnGap);
+			height:100%;
 			box-sizing: border-box;
 			border: 1px solid transparent;
 			background-color: $blankColor;
@@ -75,7 +79,7 @@
 			}
 			img{
 				display: block;
-				// width: 100%;
+				height: 100%;
 			}
 		}
 	}

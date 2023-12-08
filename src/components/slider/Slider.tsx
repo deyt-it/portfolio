@@ -6,7 +6,7 @@ import { getElementByType } from '../../utils/elementUtills';
 
 export default function Slider({
 	items, 
-	slideWidth = '90vw', 
+	slideWidth = '80vw', 
 	slideHeight, 
 	pagination = true, 
 	thumbnails = false, 
@@ -68,7 +68,6 @@ export default function Slider({
 		let attrs: any = {}
 		attrs.style = {
 			width: slideWidth, 
-			height: slideHeight, 
 		}
 		if (thumbnails) {
 			const slideRefsBackup: RefObject<Array<HTMLElement|null>> = useRef([])
@@ -78,7 +77,7 @@ export default function Slider({
 
 				if (!slideRefs.current[indexUpdated] && node) {
 					// 해당ref에 이미지 없을시 ref값 setState
-					// 이미지 있을시 로드완료후 ref값 setState하기위해 별도저장
+					// 이미지 있을시 ref값 별도저장 (로드완료후 가져와 setState하기위해)
 					if (hasImg) {
 						slideRefsBackup.current![indexUpdated] = node
 					}else{
@@ -196,7 +195,7 @@ export default function Slider({
 		<div className="slider-container" style={{width: slideWidth}}>
 			{/* {indexActive} */}
 			<div className="relative">
-				<div className="viewport">
+				<div className="viewport" style={{height: slideHeight}}>
 					<ul ref={sliderWrapRef}
 						className='animate'
 						style={{
