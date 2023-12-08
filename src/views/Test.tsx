@@ -21,7 +21,8 @@ const ParentComp = () => {
 		}
 	}, [refDoms])
 	const onImgLoad = (i: number) =>{
-
+		console.log('onImgLoad', i);
+		
 	}
 	
 	useEffect(()=>{

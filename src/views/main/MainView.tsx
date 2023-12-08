@@ -1,4 +1,4 @@
-import Slider from '../../components/Slider';
+import Slider from '../../components/slider/Slider';
 import MainProjectDesc from './MainProjectDesc';
 import imgTmp from '../../assets/images/img-tmp.jpg';
 

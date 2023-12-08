@@ -1,7 +1,7 @@
 import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
 import { IPaginationItemProps as IProps } from './ISlider';
 import { toJpeg } from 'html-to-image';
-import Loading from './Loading';
+import Loading from '../Loading';
 
 export default forwardRef(function PaginationItem(
 	{id, type, className, onClick}: IProps, 

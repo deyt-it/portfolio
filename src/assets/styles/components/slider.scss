@@ -1,4 +1,6 @@
 .slider-container{
+	$blankColor: #f6f6f6;
+
 	position: relative;
 
 	.viewport{
@@ -14,7 +16,7 @@
 				min-height: 100px;
 				justify-content: center;
 				align-items: center;
-				background-color: #f6f6f6; //썸네일 생성시 필요
+				background-color: $blankColor; //썸네일 생성시 필요
 			}
 		}
 	}
@@ -50,13 +52,19 @@
 		}
 	}
 	.thumbnails{
+		$columnGap: 2px;
+
 		display: flex;
 		flex-wrap: wrap;
-		column-gap: 2px;
+		column-gap: $columnGap;
 		li{
-			width:25%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width:calc(25% - $columnGap);
 			box-sizing: border-box;
 			border: 1px solid transparent;
+			background-color: $blankColor;
 
 			&:not(.on){
 				cursor: pointer;

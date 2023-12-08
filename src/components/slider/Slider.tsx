@@ -1,8 +1,8 @@
 import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ISliderProps as IProps, TDirection, IMoveInfo, 	IPaginationItemProps, TPaginationType } from './ISlider';
 import PaginationItem from './PaginationItem';
-import '../assets/styles/components/slider.scss';
-import { getElementByType } from '../utils/elementUtills';
+import '../../assets/styles/components/slider.scss';
+import { getElementByType } from '../../utils/elementUtills';
 
 export default function Slider({
 	items, 
@@ -13,29 +13,23 @@ export default function Slider({
 	// speed = 1000, 
 }: IProps){
 	const itemLength = items.length
-	const indexLast = itemLength-1 + 2 //앞뒤 하나씩 슬라이드 2개 추가됨
+	const indexLast = itemLength-1 + 2 //앞뒤 하나씩 아이템 2개 추가됨
 	const widthValue: number = parseInt(width.replace(/[^0-9]/g, ''))
 	const widthUnit: string = width.replace(/\d/g, '')
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
-	// let slideRefs: RefObject<Array<HTMLLIElement | null>> = useRef(
-	// 	Array.from({length: itemLength}, ()=>null)
-	// )
 	const [slideRefs, setSlideRefs] = useState<{current: Array<HTMLElement|null>}>(
 		{current: Array.from({length: itemLength}, ()=>null)}
 	)
-	// const [test, setTest] = useState(false)
 	const [indexActive, setIndexActive] = useState(1)
-	const indexActiveReal = useMemo(
-		() => {//실제 item의 index
-			let result = indexActive - 1
-			if (indexActive == 0) { result = itemLength - 1 }
-			if (indexActive == indexLast) { result = 0 }
-			return result
-		},
-		[indexActive]
-	)
 	const [reMoveInfo, setReMoveInfo] = useState<IMoveInfo | null>(null)
+	
+	const indexActiveReal = //실제 아이템의 index
+		indexActive === 0
+		? itemLength - 1
+		: indexActive === indexLast
+		? 0
+		: indexActive - 1
 
 
 	
@@ -49,53 +43,67 @@ export default function Slider({
 
 	const renderSlides = () => {
 		console.log('renderSlides');
-		let slides: any = <></>
+		let slides: Array<ReactElement> = []
 		if (thumbnails) {
-			// item의 img요소에 onLoad적용할 함수
-			// ㄴ 로드완료시 썸네일 생성하기 위해 필요
-			const setImgOnLoad = (el: ReactElement) => {
-				return {...el,
-					props: {...el.props, 
-						alt: 'test', 
-						// onLoad: ()=> slideRefs.current.push(node)
+			const slideRefsBackup: RefObject<Array<HTMLElement|null>> = useRef([])
+			// ref callback 함수. 썸네일 생성에 필요
+			const onRefUpdate = (node: HTMLElement|null, i: number, hasImg: boolean)=>{
+				console.log('onSlideRefUpdate', node , i);
+
+				if (!slideRefs.current[i] && node) {
+					// 해당ref에 이미지 없을시 ref값 setState
+					// 이미지 있을시 로드완료후 ref값 setState하기위해 별도저장
+					if (hasImg) {
+						slideRefsBackup.current![i] = node
+					}else{
+						setSlideRefs(prev => {
+							let prevClone = {...prev}
+							prevClone.current[i] = node
+							return prevClone
+						})
 					}
 				}
 			}
-			// ref callback 함수. 썸네일 생성에 필요
-			const onSlideRefUpdate = useCallback((node: HTMLElement|null, i: number)=>{
-				console.log('onSlideRefUpdate', node , i);
-				
-				if (!slideRefs.current[i] && node) {
+			const onSlideImgLoad = (i: number) => {
+				console.log('onSlideImgLoad', slideRefsBackup);
+				if (!slideRefs.current[i]) {
+					// 이미지 로드완료시 부모li의 ref값을 setState
 					setSlideRefs(prev => {
 						let prevClone = {...prev}
-						prevClone.current[i] = node
+						prevClone.current[i] = slideRefsBackup.current![i]
 						return prevClone
 					})
 				}
-			}, [slideRefs])
-			
-			useEffect(()=>{
-				console.log('onSlideRefUpdate is updated', slideRefs);
-				
-			}, [onSlideRefUpdate])
+			}
+			// item의 img요소에 onLoad적용할 함수
+			// ㄴ 로드완료시 썸네일 생성하기 위해 필요
+			const setImgOnLoad = (i: number) => (el: ReactElement) => {
+				return {...el,
+					props: {...el.props, 
+						onLoad: () => onSlideImgLoad(i), 
+					}
+				}
+			}
 
 			slides = items.map((item, i) =>{
 				// item 순회 함수. 이미지 없을시 null, 있을시 콜백함수적용한 item을 반환 
-				const itemSettedOnLoad = getElementByType(item, 'img', setImgOnLoad)
+				const itemSettedOnLoad = getElementByType(item, 'img', setImgOnLoad(i))
 				if (itemSettedOnLoad) {
 					item = itemSettedOnLoad
 				}
 				let attrs: any = {}
 				attrs.style = {width: width}
-				attrs.ref = (node: HTMLElement|null) => {onSlideRefUpdate(node, i)}
+				attrs.ref = (node: HTMLElement|null)=> {
+					onRefUpdate(node, i, itemSettedOnLoad ? true: false)
+				}
 	
 				return <li key={i} {...attrs}>{item}</li>
 			})
 		}
 		else{
-			slides = items.map((item, i) => {
+			slides = items.map((item, i) => 
 				<li key={i} style={{width: width}}>{item}</li>
-			})
+			)
 		}
 		
 		return (
@@ -117,7 +125,7 @@ export default function Slider({
 				type: type, 
 				...thumbnails && {ref: slideRefs.current![i]}, 
 			}
-			if (i == indexActiveReal) {
+			if (i === indexActiveReal) {
 				props.className = 'on'
 			}else{
 				const direction = i - indexActiveReal < 0 ? -1 : 1
@@ -159,31 +167,9 @@ export default function Slider({
 			moveNum: moveNum
 		})
 	}
-
-	// const test = {test: 1}
-	// useEffect(()=>{console.log('값변함');
-	// }, [test])
-
-
-	// const testVals: {current: Array<HTMLElement|null>} = {current: []}
-	
-	// useEffect(()=>{
-	// 	console.log('[test] useEffect', testVals);
-		
-	// }, [testVals])
-	// const test = (i: number) => (node: HTMLElement|null) => {
-	// 	console.log('[test] fx');
-		
-	// 	testVals.current[i] = node
-	// }
 	
 	return (
 		<div className="slider-container" style={{width: width}}>
-			{/* {
-				[1,2,3].map((num: number, i)=>
-					<div key={i} ref={test(i)}>{num}</div>
-				)
-			} */}
 			{/* {indexActive} */}
 			<div className="relative">
 				<div className="viewport">
