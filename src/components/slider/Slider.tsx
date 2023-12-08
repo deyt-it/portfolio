@@ -6,25 +6,46 @@ import { getElementByType } from '../../utils/elementUtills';
 
 export default function Slider({
 	items, 
-	width = '90vw', 
+	slideWidth = '90vw', 
+	slideHeight, 
 	pagination = true, 
 	thumbnails = false, 
+	thumbnailWidthDivision = 4, 
+	thumbnailHeight, 
+	thumbnailGap, 
 	infinite = true, 
+	startIndex = 0, 
 	// speed = 1000, 
 }: IProps){
 	const itemLength = items.length
 	const indexLast = itemLength-1 + 2 //앞뒤 하나씩 아이템 2개 추가됨
-	const widthValue: number = parseInt(width.replace(/[^0-9]/g, ''))
-	const widthUnit: string = width.replace(/\d/g, '')
+	const ratioDefault = 1.6;
+	const slideWidthValue: number = parseInt(slideWidth.replace(/[^0-9]/g, ''))
+	const slideWidthUnit: string = slideWidth.replace(/\d/g, '')
+	if (!slideHeight) {
+		slideHeight = Math.round(slideWidthValue / ratioDefault) + slideWidthUnit
+	}
+	let thumbnailGapValue
+	if (!thumbnailGap) {
+		thumbnailGapValue = Math.round((slideWidthValue / thumbnailWidthDivision) * 0.15)
+		thumbnailGap = thumbnailGapValue + slideWidthUnit
+	}else{
+		thumbnailGapValue = parseInt(thumbnailGap.replace(/[^0-9]/g, ''))
+	}
+	const thumbnailWidth = `calc(${100/thumbnailWidthDivision}% - ${thumbnailGap})`
+	if (!thumbnailHeight) { //thumbnailGap관련 예상변수가 많아서 임의로 지정
+		thumbnailHeight = 
+			(slideWidthValue / thumbnailWidthDivision - thumbnailGapValue) * ratioDefault + slideWidthUnit
+	}
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
 	const [slideRefs, setSlideRefs] = useState<{current: Array<HTMLElement|null>}>(
 		{current: Array.from({length: itemLength}, ()=>null)}
 	)
-	const [indexActive, setIndexActive] = useState(1)
+	const [indexActive, setIndexActive] = useState(startIndex+1)
 	const [reMoveInfo, setReMoveInfo] = useState<IMoveInfo | null>(null)
 	
-	const indexActiveReal = //실제 아이템의 index
+	const indexActiveReal = //활성화된 슬라이드의 아이템상 실제 index
 		indexActive === 0
 		? itemLength - 1
 		: indexActive === indexLast
@@ -41,46 +62,51 @@ export default function Slider({
 	}, [reMoveInfo])
 
 
-	const renderSlides = () => {
+	const renderSlides = useCallback(() => {
 		console.log('renderSlides');
 		let slides: Array<ReactElement> = []
+		let attrs: any = {}
+		attrs.style = {
+			width: slideWidth, 
+			height: slideHeight, 
+		}
 		if (thumbnails) {
 			const slideRefsBackup: RefObject<Array<HTMLElement|null>> = useRef([])
 			// ref callback 함수. 썸네일 생성에 필요
-			const onRefUpdate = (node: HTMLElement|null, i: number, hasImg: boolean)=>{
-				console.log('onSlideRefUpdate', node , i);
+			const onRefUpdate = (node: HTMLElement|null, indexUpdated: number, hasImg: boolean)=>{
+				console.log('onSlideRefUpdate', node , indexUpdated);
 
-				if (!slideRefs.current[i] && node) {
+				if (!slideRefs.current[indexUpdated] && node) {
 					// 해당ref에 이미지 없을시 ref값 setState
 					// 이미지 있을시 로드완료후 ref값 setState하기위해 별도저장
 					if (hasImg) {
-						slideRefsBackup.current![i] = node
+						slideRefsBackup.current![indexUpdated] = node
 					}else{
 						setSlideRefs(prev => {
 							let prevClone = {...prev}
-							prevClone.current[i] = node
+							prevClone.current[indexUpdated] = node
 							return prevClone
 						})
 					}
 				}
 			}
-			const onSlideImgLoad = (i: number) => {
+			const onSlideImgLoad = (indexUpdated: number) => {
 				console.log('onSlideImgLoad', slideRefsBackup);
-				if (!slideRefs.current[i]) {
+				if (!slideRefs.current[indexUpdated]) {
 					// 이미지 로드완료시 부모li의 ref값을 setState
 					setSlideRefs(prev => {
 						let prevClone = {...prev}
-						prevClone.current[i] = slideRefsBackup.current![i]
+						prevClone.current[indexUpdated] = slideRefsBackup.current![indexUpdated]
 						return prevClone
 					})
 				}
 			}
 			// item의 img요소에 onLoad적용할 함수
 			// ㄴ 로드완료시 썸네일 생성하기 위해 필요
-			const setImgOnLoad = (i: number) => (el: ReactElement) => {
+			const setImgOnLoad = (parentIdx: number) => (el: ReactElement) => {
 				return {...el,
 					props: {...el.props, 
-						onLoad: () => onSlideImgLoad(i), 
+						onLoad: () => onSlideImgLoad(parentIdx), 
 					}
 				}
 			}
@@ -91,8 +117,6 @@ export default function Slider({
 				if (itemSettedOnLoad) {
 					item = itemSettedOnLoad
 				}
-				let attrs: any = {}
-				attrs.style = {width: width}
 				attrs.ref = (node: HTMLElement|null)=> {
 					onRefUpdate(node, i, itemSettedOnLoad ? true: false)
 				}
@@ -102,19 +126,19 @@ export default function Slider({
 		}
 		else{
 			slides = items.map((item, i) => 
-				<li key={i} style={{width: width}}>{item}</li>
+				<li key={i} {...attrs}>{item}</li>
 			)
 		}
 		
 		return (
 			<>
 			{/* 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다 */}
-			<li style={{width: width}}>{items[itemLength-1]}</li>
+			<li {...attrs}>{items[itemLength-1]}</li>
 			{ slides }
-			<li style={{width: width}}>{items[0]}</li>
+			<li {...attrs}>{items[0]}</li>
 			</>
 		)
-	}
+	}, [items])
 	
 	const renderPagination = (type: TPaginationType) => {
 		console.log('renderPagination', type, slideRefs);
@@ -169,15 +193,15 @@ export default function Slider({
 	}
 	
 	return (
-		<div className="slider-container" style={{width: width}}>
+		<div className="slider-container" style={{width: slideWidth}}>
 			{/* {indexActive} */}
 			<div className="relative">
 				<div className="viewport">
 					<ul ref={sliderWrapRef}
 						className='animate'
 						style={{
-							width: widthValue*(itemLength+2) + widthUnit, 
-							transform: `translateX(-${widthValue*indexActive + widthUnit})`, 
+							width: slideWidthValue*(itemLength+2) + slideWidthUnit, 
+							transform: `translateX(-${slideWidthValue*indexActive + slideWidthUnit})`, 
 						}}
 					>
 						{ renderSlides() }

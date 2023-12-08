@@ -2,10 +2,15 @@ import { ReactElement, ReactNode } from 'react'
 
 export interface ISliderProps {
 	items: Array<ReactElement>, 
-	width?: string, 
+	slideWidth?: string, 
+	slideHeight?: string, 
 	pagination?: boolean, 
 	thumbnails?: boolean, 
+	thumbnailWidthDivision?: number, 
+	thumbnailHeight?: string, 
+	thumbnailGap?: string, 
 	infinite?: boolean, 
+	startIndex?: number, 
 	// speed?: number, 
 }
 
