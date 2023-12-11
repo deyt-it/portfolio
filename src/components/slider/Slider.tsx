@@ -1,25 +1,30 @@
 import React, { ReactElement, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ISliderProps as IProps, TDirection, IMoveInfo, 	IPaginationItemProps, TPaginationType } from './ISlider';
-import PaginationItem from './PaginationItem';
+import { ISliderProps as IProps, TDirection, TPaginationType, IMoveInfo, IPageBulletItemProps, IPageThumbnailItemProps } from './ISlider';
+import PageBulletItem from './PageBulletItem';
+import PageThumbnailItem from './PageThumbnailItem';
 import '../../assets/styles/components/slider.scss';
 import { getElementByType } from '../../utils/elementUtills';
+import styled from 'styled-components';
 
 export default function Slider({
+	sliderClass, 
+	sliderId, 
 	items, 
 	slideWidth = '80vw', 
 	slideHeight, 
-	pagination = true, 
-	thumbnails = false, 
+	showBullets = true, 
+	bulletsClass = '', 
+	showThumbnails = true, 
 	thumbnailWidthDivision = 4, 
 	thumbnailHeight, 
 	thumbnailGap, 
-	infinite = true, 
 	startIndex = 0, 
+	infinite = true, 
 	// speed = 1000, 
 }: IProps){
 	const itemLength = items.length
 	const indexLast = itemLength-1 + 2 //앞뒤 하나씩 아이템 2개 추가됨
-	const ratioDefault = 1.6;
+	const ratioDefault = 1.6; //임의 비율 8:5
 	const slideWidthValue: number = parseInt(slideWidth.replace(/[^0-9]/g, ''))
 	const slideWidthUnit: string = slideWidth.replace(/\d/g, '')
 	if (!slideHeight) {
@@ -32,10 +37,10 @@ export default function Slider({
 	}else{
 		thumbnailGapValue = parseInt(thumbnailGap.replace(/[^0-9]/g, ''))
 	}
-	const thumbnailWidth = `calc(${100/thumbnailWidthDivision}% - ${thumbnailGap})`
+	const thumbnailWidth = `calc((100% - ${thumbnailGap} * ${thumbnailWidthDivision-1}) / ${thumbnailWidthDivision})`
 	if (!thumbnailHeight) { //thumbnailGap관련 예상변수가 많아서 임의로 지정
 		thumbnailHeight = 
-			(slideWidthValue / thumbnailWidthDivision - thumbnailGapValue) * ratioDefault + slideWidthUnit
+			(slideWidthValue / thumbnailWidthDivision - thumbnailGapValue) / ratioDefault + slideWidthUnit
 	}
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
@@ -69,7 +74,7 @@ export default function Slider({
 		attrs.style = {
 			width: slideWidth, 
 		}
-		if (thumbnails) {
+		if (showThumbnails) {
 			const slideRefsBackup: RefObject<Array<HTMLElement|null>> = useRef([])
 			// ref callback 함수. 썸네일 생성에 필요
 			const onRefUpdate = (node: HTMLElement|null, indexUpdated: number, hasImg: boolean)=>{
@@ -141,29 +146,45 @@ export default function Slider({
 	
 	const renderPagination = (type: TPaginationType) => {
 		console.log('renderPagination', type, slideRefs);
-		
-		return Array.from({length: itemLength}, (_, i)=> {
-			let props: IPaginationItemProps = {
-				id: i, 
-				type: type, 
-				...thumbnails && {ref: slideRefs.current![i]}, 
+
+		const getCommonProps = (indexPage: number) => {
+			// 페이지네이션(bullet, thumbnail)에 넘길 공통 props
+			const distance = indexPage - indexActiveReal
+			const direction = distance < 0 ? -1 : 1
+			const moveNum = Math.abs(distance)
+			return {
+				id: indexPage, 
+				isActive: indexPage === indexActiveReal ? true : false, 
+				onClick: ()=>handleNav(direction, moveNum)
 			}
-			if (i === indexActiveReal) {
-				props.className = 'on'
-			}else{
-				const direction = i - indexActiveReal < 0 ? -1 : 1
-				const moveNum = Math.abs(i - indexActiveReal)
-				props.onClick = ()=>handleNav(direction, moveNum)
-			}
-			
-			return <PaginationItem key={i} {...props} />
-		})
+		}
+
+		if (type === 'thumbnail') {
+			return Array.from({length: itemLength}, (_, i)=> {
+				let props: IPageThumbnailItemProps = {
+					...getCommonProps(i), 
+					...{ref: slideRefs.current![i]}, 
+					quality: 1 / thumbnailWidthDivision
+				}
+				
+				return <PageThumbnailItem key={i} {...props} />
+			})
+		}
+		else{
+			return Array.from({length: itemLength}, (_, i)=> {
+				let props: IPageBulletItemProps = {
+					...getCommonProps(i), 
+				}
+				
+				return <PageBulletItem key={i} {...props} />
+			})
+		}
 	}
 
 	const handleNav = (direction: TDirection, moveNum: number) => {
 		if (
-			(direction == -1 && indexActive == 0)
-			|| (direction == 1 && indexActive == indexLast)
+			(indexActive == 0 && direction == -1)
+			|| (indexActive == indexLast && direction == 1)
 		) {
 			// 슬라이드 양 끝에 다다랐을 시, 재조정 후 이동
 			// ㄴ 두 동작을 연속으로 보여주기 위해 setTimeout이 필요
@@ -192,7 +213,10 @@ export default function Slider({
 	}
 	
 	return (
-		<div className="slider-container" style={{width: slideWidth}}>
+		<div id={sliderId}
+			className={`slider-container ${sliderClass}`}
+			style={{width: slideWidth}}
+		>
 			{/* {indexActive} */}
 			<div className="relative">
 				<div className="viewport" style={{height: slideHeight}}>
@@ -212,17 +236,27 @@ export default function Slider({
 				</div>
 			</div>
 			{
-				pagination &&
-				<ul className="pagination">
-					{ renderPagination('page') }
+				showBullets &&
+				<ul className={`bullets ${bulletsClass}`}>
+					{ renderPagination('bullet') }
 				</ul>
 			}
 			{
-				thumbnails && 
-				<ul className="thumbnails">
+				showThumbnails && 
+				<Thumbnails className="thumbnails"
+					thumbnailWidth={thumbnailWidth}
+					thumbnailHeight={thumbnailHeight}
+				>
 					{ renderPagination('thumbnail') }
-				</ul>
+				</Thumbnails>
 			}
 		</div>
 	)
 }
+
+const Thumbnails = styled.ul<any>`
+	li {
+		width: ${props => props.thumbnailWidth};
+		height: ${props => props.thumbnailHeight};
+	}
+`

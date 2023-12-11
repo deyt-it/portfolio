@@ -1,19 +1,19 @@
 import Slider from '../../components/slider/Slider';
 import MainProjectDesc from './MainProjectDesc';
 import imgTmp from '../../assets/images/img-tmp.jpg';
+import imgTmpGif from '../../assets/images/img-tmp-gif.gif';
 
 
 export default function MainView(){
 	const sliderSetting = {
 		items: [
-			// <img src='https://item.kakaocdn.net/do/8bdb8dec2d96f5e334479d9e139a892cf43ad912ad8dd55b04db6a64cddaf76d' alt="" />, 
+			<img src={imgTmpGif} alt="" />, 
 			<img src={imgTmp} alt="" />, 
 			<div style={{width: '200px', backgroundColor: 'pink'}}>2</div>, 
 			<div>3</div>, 
 			<div>3</div>, 
 			// <div><div><ul><li>depth</li><li><img src={imgTmp} alt="" /></li></ul></div></div>
 		], 
-		thumbnails: true, 
 	}
 	const projectDesc = {
 		period: {

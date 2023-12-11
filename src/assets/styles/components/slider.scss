@@ -38,7 +38,7 @@
 			}
 		}
 	}
-	.pagination{
+	.bullets{
 		display: flex;
 		column-gap: 4px;
 		justify-content: center;
@@ -53,19 +53,18 @@
 		}
 	}
 	.thumbnails{
-		$columnGap: 3vw;
+		$columnGap: 2.5vw;
 
 		display: flex;
 		flex-wrap: wrap;
-		gap: calc($columnGap - 1vw) $columnGap;
-		height:12vw;
+		justify-content: space-between;
+		row-gap: 2vw;
+		// gap: calc($columnGap - 1vw) $columnGap;
 		li{
 			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			width:calc(25% - $columnGap);
-			height:100%;
 			box-sizing: border-box;
 			border: 1px solid transparent;
 			background-color: $blankColor;

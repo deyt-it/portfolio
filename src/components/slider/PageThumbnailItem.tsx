@@ -1,23 +1,22 @@
-import { ForwardedRef, forwardRef, useEffect, useState } from 'react';
-import { IPaginationItemProps as IProps } from './ISlider';
+import { forwardRef, useEffect, useState } from 'react';
+import { IPageThumbnailItemProps as IProps } from './ISlider';
 import { toJpeg } from 'html-to-image';
 import Loading from '../Loading';
 
 export default forwardRef(function PaginationItem(
-	{id, type, className, onClick}: IProps, 
+	{id, isActive, onClick, quality=0.25}: IProps, 
 	// ref: ForwardedRef<HTMLElement | null>
 	ref: any
 ){
-	console.log('[PaginationItem]', ref);
 	const [isLoading, setIsLoading] = useState(true)
 	const [thumbnailUrl, setThumbnailUrl] = useState("")
 	
 	
 	useEffect(()=>{
-		console.log(1, ref);
+		console.log('[PageThumbnailItem]', thumbnailUrl, ref);
 		
-		if (ref) {
-			toJpeg(ref, {cacheBust: true})
+		if (thumbnailUrl === '' && ref) {
+			toJpeg(ref, {cacheBust: true, quality: quality})
 			.then(url => {
 				setIsLoading(false)
 				setThumbnailUrl(url)
@@ -29,13 +28,11 @@ export default forwardRef(function PaginationItem(
 	}, [ref])
 	
 	return(
-		<li className={className} onClick={onClick}>
+		<li className={isActive ? 'on' : ''} onClick={onClick}>
 			{
-				type == 'thumbnail'
-				? isLoading
+				isLoading
 					? <Loading />
 					: <img src={thumbnailUrl} alt="" />
-				: id + 1
 			}
 		</li>
 	)
