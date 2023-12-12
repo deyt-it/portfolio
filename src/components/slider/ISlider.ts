@@ -8,7 +8,7 @@ export interface ISliderProps {
 	sliderClass?: string, 
 	sliderId?: string, 
 	items: Array<ReactElement>, 
-	slideWidth?: string, 
+	slideWidth: string, 
 	slideHeight?: string, 
 	showBullets?: boolean, 
 	bulletsClass?: string, 

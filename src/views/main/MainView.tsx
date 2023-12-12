@@ -1,3 +1,4 @@
+import '../../assets/styles/main.scss';
 import Slider from '../../components/slider/Slider';
 import MainProjectDesc from './MainProjectDesc';
 import imgTmp from '../../assets/images/img-tmp.jpg';
@@ -14,6 +15,8 @@ export default function MainView(){
 			<div>3</div>, 
 			// <div><div><ul><li>depth</li><li><img src={imgTmp} alt="" /></li></ul></div></div>
 		], 
+		slideWidth: '580px', 
+		slideHeight: '350px', 
 	}
 	const projectDesc = {
 		period: {
@@ -35,13 +38,17 @@ export default function MainView(){
 				content: 'ARS설정, 회원가입, 채팅', 
 			}, 
 		], 
+		corp: '서울이동통신', 
 		link: 'https://say015.com', 
 	}
 	
 	return (
 		<div className="main-container">
-			<Slider {...sliderSetting} />
-			<MainProjectDesc {...projectDesc} />
+			<h2>Projects</h2>
+			<section>
+				<Slider {...sliderSetting} />
+				<MainProjectDesc {...projectDesc} />
+			</section>
 		</div>
 	)
 }

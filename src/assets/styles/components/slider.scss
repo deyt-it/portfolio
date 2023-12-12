@@ -1,5 +1,5 @@
 .slider-container{
-	$blankColor: #f6f6f6;
+	$blankColor: #eee;
 
 	position: relative;
 
@@ -24,11 +24,16 @@
 	.nav-buttons{
 		button{
 			position: absolute;
-			top:50%;
-			display: block;
-			&::before{
-				display: block;
-				content: 'test';
+			top:0;
+			display: flex;
+			width: 50px;
+			height: 100%;
+			justify-content: center;
+			align-items: center;
+			color:#333;
+
+			&:hover{
+				background-color: rgba(0,0,0,.04);
 			}
 			&.prev{
 				left:0;
@@ -40,33 +45,39 @@
 	}
 	.bullets{
 		display: flex;
-		column-gap: 4px;
+		margin-top: 24px;
+		column-gap: 6px;
 		justify-content: center;
 		li{
+			overflow: hidden;
+			text-indent: 100%;
+			width:12px;height:12px;
+			border-radius: 50%;
+			font-size: 14px;
 			&:not(.on){
 				cursor: pointer;
+				background-color: #e0e0e0;
 			}
 			&.on, 
 			&:hover{
 				color: red;
+				background-color: $blue;
 			}
 		}
 	}
 	.thumbnails{
-		$columnGap: 2.5vw;
-
 		display: flex;
+		margin-top: 25px;
 		flex-wrap: wrap;
 		justify-content: space-between;
-		row-gap: 2vw;
-		// gap: calc($columnGap - 1vw) $columnGap;
+		row-gap: 15px;
 		li{
 			overflow: hidden;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			box-sizing: border-box;
-			border: 1px solid transparent;
+			border: 4px solid #e0e0e0;
 			background-color: $blankColor;
 
 			&:not(.on){
@@ -74,7 +85,7 @@
 			}
 			&.on, 
 			&:hover{
-				border-color: red;
+				border-color: $blue;
 			}
 			img{
 				display: block;

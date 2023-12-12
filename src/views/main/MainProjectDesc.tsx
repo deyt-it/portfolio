@@ -1,23 +1,24 @@
-import '../../assets/styles/main.scss';
 import { FiLink2 } from 'react-icons/fi';
+import { RiBuildingLine } from 'react-icons/ri';
 // import { dateUtils } from "../../utils/dateUtils";
 
-interface Props {
+interface IProps {
 	period: {
 		start: Date, 
 		end: Date, 
 	}, 
 	technologies: Array<string>, 
-	details: Array<Detail>, 
+	details: Array<IDetail>, 
+	corp: string, 
 	link: string, 
 }
-interface Detail {
+interface IDetail {
 	title: string, 
 	content: string, 
 }
 
 
-export default function MainProjectDesc(props: Props){
+export default function MainProjectDesc(props: IProps){
 	const startStr = props.period.start.toISOString()
 	const startYear = startStr.split('-')[0]
 	const startMonth = startStr.split('-')[1]
@@ -51,12 +52,18 @@ export default function MainProjectDesc(props: Props){
 					)
 				}
 			</ul>
-			<p className="link">
-				<FiLink2 className="ico" />
-				<a href={props.link} target="_blank">
-					{props.link}
-				</a>
-			</p>
+			<ul className="refs">
+				<li>
+					<RiBuildingLine className="ico" />
+					{props.corp}
+				</li>
+				<li>
+					<FiLink2 className="ico link" />
+					<a href={props.link} target="_blank">
+						{props.link}
+					</a>
+				</li>
+			</ul>
 		</div>
 	)
 }

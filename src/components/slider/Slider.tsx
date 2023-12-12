@@ -10,7 +10,7 @@ export default function Slider({
 	sliderClass, 
 	sliderId, 
 	items, 
-	slideWidth = '80vw', 
+	slideWidth, 
 	slideHeight, 
 	showBullets = true, 
 	bulletsClass = '', 
@@ -32,7 +32,7 @@ export default function Slider({
 	}
 	let thumbnailGapValue
 	if (!thumbnailGap) {
-		thumbnailGapValue = Math.round((slideWidthValue / thumbnailWidthDivision) * 0.15)
+		thumbnailGapValue = Math.round((slideWidthValue / thumbnailWidthDivision) * 0.1)
 		thumbnailGap = thumbnailGapValue + slideWidthUnit
 	}else{
 		thumbnailGapValue = parseInt(thumbnailGap.replace(/[^0-9]/g, ''))
@@ -40,7 +40,7 @@ export default function Slider({
 	const thumbnailWidth = `calc((100% - ${thumbnailGap} * ${thumbnailWidthDivision-1}) / ${thumbnailWidthDivision})`
 	if (!thumbnailHeight) { //thumbnailGap관련 예상변수가 많아서 임의로 지정
 		thumbnailHeight = 
-			(slideWidthValue / thumbnailWidthDivision - thumbnailGapValue) / ratioDefault + slideWidthUnit
+			(slideWidthValue / thumbnailWidthDivision - thumbnailGapValue) / 1.44 + slideWidthUnit
 	}
 
 	const sliderWrapRef: RefObject<HTMLUListElement> = useRef(null)
@@ -213,9 +213,9 @@ export default function Slider({
 	}
 	
 	return (
-		<div id={sliderId}
+		<SliderContainer id={sliderId}
 			className={`slider-container ${sliderClass}`}
-			style={{width: slideWidth}}
+			width={slideWidth}
 		>
 			{/* {indexActive} */}
 			<div className="relative">
@@ -250,10 +250,13 @@ export default function Slider({
 					{ renderPagination('thumbnail') }
 				</Thumbnails>
 			}
-		</div>
+		</SliderContainer>
 	)
 }
 
+const SliderContainer = styled.div<any>`
+	width: ${props => props.width}
+`
 const Thumbnails = styled.ul<any>`
 	li {
 		width: ${props => props.thumbnailWidth};
