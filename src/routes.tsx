@@ -20,6 +20,9 @@ const router = createBrowserRouter([
 		path: '/test', 
 		element: <Test />, 
 	}, 
-])
+], 
+{
+	basename: '/portfolio', 
+})
 
 export default router
