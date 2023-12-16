@@ -21,6 +21,7 @@ jobs:
       # node_modules 폴더를 캐싱
       # package-lock.json 파일 변경시 restore-keys 사용하여 npm ci 실행
       # ㄴ 변경되지 않은 경우 (cache hit 발생) npm ci 실행은 스킵
+      - name: Cache
         uses: actions/cache@v3
         id: cache
         with:
