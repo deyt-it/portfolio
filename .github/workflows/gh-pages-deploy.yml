@@ -12,16 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Setup Node
-      - uses: actions/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version: 16.x
       # node_modules 폴더를 캐싱
       # package-lock.json 파일 변경시 restore-keys 사용하여 npm ci 실행
       # ㄴ 변경되지 않은 경우 (cache hit 발생) npm ci 실행은 스킵
-      - uses: actions/cache@v3
+        uses: actions/cache@v3
         id: cache
         with:
           path: '**/node_modules'
@@ -32,7 +32,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Build
-      - run: npm run build
+        run: npm run build
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
