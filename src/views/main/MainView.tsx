@@ -15,8 +15,9 @@ export default function MainView(){
 			<div>3</div>, 
 			// <div><div><ul><li>depth</li><li><img src={imgTmp} alt="" /></li></ul></div></div>
 		], 
-		slideWidth: '580px', 
-		slideHeight: '350px', 
+		// containerClass: 'slider-area', 
+		slideWidth: '545px', 
+		slideHeight: '330px', 
 	}
 	const projectDesc = {
 		period: {
@@ -44,11 +45,37 @@ export default function MainView(){
 	
 	return (
 		<div className="main-container">
-			<h2>Projects</h2>
-			<section>
-				<Slider {...sliderSetting} />
-				<MainProjectDesc {...projectDesc} />
-			</section>
+			<article className='personal-info'>
+				<h2>
+					타이틀입니다.<br />
+					두 줄이에요
+				</h2>
+				<div style={{height: '275px', backgroundColor: 'pink'}}>tmp</div>
+			</article>
+
+			<article className="career">
+				<h2>Career</h2>
+				<section>
+					<Slider {...sliderSetting} containerClass="slider-area" />
+					<MainProjectDesc {...projectDesc} containerClass="project-desc-area" />
+				</section>
+				<section>
+					<Slider {...sliderSetting} containerClass="slider-area" />
+					<MainProjectDesc {...projectDesc} containerClass="project-desc-area" />
+				</section>
+
+				<div className="timeline-rail">
+				<div className="timeline-box">
+					<ul className='timeline'>
+						<li>NOW</li>
+						<li className='on'>2022</li>
+						<li className='on'>2021</li>
+						<li>2020</li>
+						<li className='off'>2019</li>
+					</ul>
+				</div>
+				</div>
+			</article>
 		</div>
 	)
 }

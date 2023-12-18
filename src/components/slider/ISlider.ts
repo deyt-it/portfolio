@@ -5,7 +5,7 @@ export type TDirection = -1 | 1
 export type TPaginationType = 'bullet' | 'thumbnail'
 
 export interface ISliderProps {
-	sliderClass?: string, 
+	containerClass?: string, 
 	sliderId?: string, 
 	items: Array<ReactElement>, 
 	slideWidth: string, 

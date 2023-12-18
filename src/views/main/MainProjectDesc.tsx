@@ -3,6 +3,7 @@ import { RiBuildingLine } from 'react-icons/ri';
 // import { dateUtils } from "../../utils/dateUtils";
 
 interface IProps {
+	containerClass?: string, 
 	period: {
 		start: Date, 
 		end: Date, 
@@ -27,7 +28,7 @@ export default function MainProjectDesc(props: IProps){
 	const endMonth = endStr.split('-')[1]
 
 	return (
-		<div className="project-desc">
+		<div className={`project-desc ${props.containerClass}`}>
 			<p className="period">
 				<span className="year">{startYear}</span>
 				<span className="month">/{startMonth}</span>

@@ -7,7 +7,7 @@ import { getElementByType } from '../../utils/elementUtills';
 import styled from 'styled-components';
 
 export default function Slider({
-	sliderClass, 
+	containerClass, 
 	sliderId, 
 	items, 
 	slideWidth, 
@@ -214,7 +214,7 @@ export default function Slider({
 	
 	return (
 		<SliderContainer id={sliderId}
-			className={`slider-container ${sliderClass}`}
+			className={`slider-container ${containerClass}`}
 			width={slideWidth}
 		>
 			{/* {indexActive} */}
