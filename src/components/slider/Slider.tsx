@@ -37,7 +37,7 @@ export default function Slider({
 	}else{
 		thumbnailGapValue = parseInt(thumbnailGap.replace(/[^0-9]/g, ''))
 	}
-	const thumbnailWidth = `calc((100% - ${thumbnailGap} * ${thumbnailWidthDivision-1}) / ${thumbnailWidthDivision})`
+	const thumbnailWidth = `calc((100% / ${thumbnailWidthDivision}) - ${thumbnailGap})`
 	if (!thumbnailHeight) { //thumbnailGap관련 예상변수가 많아서 임의로 지정
 		thumbnailHeight = 
 			(slideWidthValue / thumbnailWidthDivision - thumbnailGapValue) / 1.44 + slideWidthUnit
@@ -244,8 +244,9 @@ export default function Slider({
 			{
 				showThumbnails && 
 				<Thumbnails className="thumbnails"
-					thumbnailWidth={thumbnailWidth}
-					thumbnailHeight={thumbnailHeight}
+					width={thumbnailWidth}
+					height={thumbnailHeight}
+					gap={thumbnailGap}
 				>
 					{ renderPagination('thumbnail') }
 				</Thumbnails>
@@ -255,11 +256,14 @@ export default function Slider({
 }
 
 const SliderContainer = styled.div<any>`
-	width: ${props => props.width}
+	width: ${({width}) => width}
 `
 const Thumbnails = styled.ul<any>`
+	width: calc(100% + ${({gap}) => gap});
+	margin-left: -${({gap}) => gap};
 	li {
-		width: ${props => props.thumbnailWidth};
-		height: ${props => props.thumbnailHeight};
+		width: ${({width}) => width};
+		height: ${({height}) => height};
+		margin-left: ${({gap}) => gap};
 	}
 `

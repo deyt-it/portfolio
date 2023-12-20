@@ -21,7 +21,7 @@
 		}
 		section{
 			display: flex;
-			padding-right: 103px;
+			padding-right: 95px;
 			padding-top: 150px;
 		}
 		.slider-area{
@@ -35,7 +35,7 @@
 		}
 		.project-desc-area{
 			flex:1 1 auto;
-			padding-left: 44px;
+			padding-left: 50px;
 			padding-top: 8px;
 		}
 		.timeline-rail{
@@ -49,9 +49,10 @@
 				display: flex;
 				align-items: end;
 				
-				// 첫번째 section의 높이값- 
-				// timeline의 처음위치를 section영역 하단에 맞춰줌
-				height: 624px;
+				// 첫번째 section의 높이값
+				// ㄴ timeline의 처음위치를 section영역 하단에 맞춰줌
+				height: 90vh;
+				max-height: 624px;
 			}
 		}
 
@@ -76,24 +77,25 @@
 				flex-wrap: wrap;
 				column-gap: 8px;
 				row-gap: 5px;
-				margin-top: 14px;
+				margin-top: 7px;
 				li{
 					padding: 0 6px;
 					line-height: 24px;
-					font-size: 16px;
+					font-size: 15px;
+					color: #555;
 					background-color: #e0e0e0;
 				}
 			}
 			.details{
-				margin-top: 44px;
+				margin-top: 50px;
 				li{
 					display: grid;
-					grid-template-columns: 100px 1fr;
+					grid-template-columns: 95px 1fr;
 					&:not(:first-child){
-						margin-top: 8px;
+						margin-top: 12px;
 					}
 					p{
-						line-height: 27px;
+						line-height: 1.5;
 					}
 				}
 				.title{
@@ -101,6 +103,7 @@
 					font-weight: bold;
 				}
 				.content{
+					word-break: keep-all;
 					font-size: 17px;
 				}
 			}
@@ -166,6 +169,19 @@
 			}
 			li:nth-child(even){
 				text-align: right;
+			}
+			li.on{
+				&::before{
+					animation: dimming 1.4s infinite linear;
+				}
+				@keyframes dimming {
+					0%, 100% {
+						box-shadow: 0 0 2px $blue;
+					}
+					50% {
+						box-shadow: 0 0 8px 1px $blue;
+					}
+				}
 			}
 			li.on, li:hover{
 				color: $blue;

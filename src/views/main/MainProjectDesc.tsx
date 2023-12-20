@@ -2,16 +2,17 @@ import { FiLink2 } from 'react-icons/fi';
 import { RiBuildingLine } from 'react-icons/ri';
 // import { dateUtils } from "../../utils/dateUtils";
 
-interface IProps {
+export interface IMainProjectDesc {
 	containerClass?: string, 
-	period: {
-		start: Date, 
-		end: Date, 
-	}, 
+	period: IPeriod, 
 	technologies: Array<string>, 
 	details: Array<IDetail>, 
 	corp: string, 
-	link: string, 
+	link?: string, 
+}
+interface IPeriod {
+	start: Date, 
+	end: Date, 
 }
 interface IDetail {
 	title: string, 
@@ -19,7 +20,7 @@ interface IDetail {
 }
 
 
-export default function MainProjectDesc(props: IProps){
+export default function MainProjectDesc(props: IMainProjectDesc){
 	const startStr = props.period.start.toISOString()
 	const startYear = startStr.split('-')[0]
 	const startMonth = startStr.split('-')[1]
