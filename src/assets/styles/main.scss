@@ -6,6 +6,7 @@
 	color: #333;
 	
 	h2{
+		padding-top: 50px;
 		font-size: 36px;
 		font-weight: bold;
 	}
@@ -14,15 +15,14 @@
 	} //personal-info
 	.career{
 		position: relative;
-		margin-top: 50px;
 		
-		h2 +section{
-			padding-top: 34px;
-		}
 		section{
 			display: flex;
 			padding-right: 95px;
 			padding-top: 150px;
+		}
+		section:not(section +section){
+			padding-top: 34px;
 		}
 		.slider-area{
 			// width: 545px; //Slider컴포넌트에 props로 넘김
