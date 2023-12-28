@@ -10,7 +10,7 @@ interface ICareerItem {
 const slideWidth = '545px';
 const slideHeight = '330px';
 
-export const careerItems: Array<ICareerItem> = [
+export const projects: Array<ICareerItem> = [
 	{
 		sliderProps: {
 			items: [
