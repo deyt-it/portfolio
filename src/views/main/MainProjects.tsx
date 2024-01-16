@@ -1,7 +1,21 @@
 import { ISliderProps } from '../../components/slider/ISlider';
 import { IMainProjectDesc } from './MainProjectDesc';
-import imgTmp from '../../assets/images/img-tmp.jpg';
-import imgTmpGif from '../../assets/images/img-tmp-gif.gif';
+import career01sjw1 from '../../assets/images/01sjw-1.gif';
+import career01sjw2 from '../../assets/images/01sjw-2.gif';
+import career01sjw3 from '../../assets/images/01sjw-3.gif';
+import career01sjw4 from '../../assets/images/01sjw-4.gif';
+import career01sjw5 from '../../assets/images/01sjw-5.gif';
+import career01sjw6 from '../../assets/images/01sjw-6.gif';
+import career01sjw7 from '../../assets/images/01sjw-7.gif';
+import career02onuii1 from '../../assets/images/02onuii-1.gif';
+import career02onuii2 from '../../assets/images/02onuii-2.gif';
+import career03seoultel1 from '../../assets/images/03seoultel-1.jpg';
+import career03seoultel2 from '../../assets/images/03seoultel-2.gif';
+import career03seoultel3 from '../../assets/images/03seoultel-3.gif';
+import career03seoultel4 from '../../assets/images/03seoultel-4.jpg';
+import career03seoultel5 from '../../assets/images/03seoultel-5.jpg';
+import career04teemstone1 from '../../assets/images/04teemstone-1.gif';
+import career04teemstone2 from '../../assets/images/04teemstone-2.gif';
 
 interface IMainProject {
 	sliderProps: ISliderProps, 
@@ -14,9 +28,8 @@ export const projects: Array<IMainProject> = [
 	{
 		sliderProps: {
 			items: [
-				<img src={imgTmpGif} alt="" />, 
-				<img src={imgTmp} alt="" />, 
-				<div>3</div>, 
+				<img src={career04teemstone1} alt="" />, 
+				<img src={career04teemstone2} alt="" />, 
 			], 
 			slideWidth: slideWidth, 
 			slideHeight: slideHeight, 
@@ -42,18 +55,17 @@ export const projects: Array<IMainProject> = [
 				}, 
 			], 
 			corp: '팀스톤', 
-			// link: 'https://say015.com', 
 		}
 	}, 
 
 	{
 		sliderProps: {
 			items: [
-				<img src={imgTmpGif} alt="" />, 
-				<img src={imgTmp} alt="" />, 
-				<div style={{width: '200px', backgroundColor: 'pink'}}>2</div>, 
-				<div>3</div>, 
-				<div>3</div>, 
+				<img src={career03seoultel1} alt="" />, 
+				<img src={career03seoultel2} alt="" />, 
+				<img src={career03seoultel3} alt="" />, 
+				<img src={career03seoultel4} alt="" />, 
+				<img src={career03seoultel5} alt="" />, 
 				// <div><div><ul><li>depth</li><li><img src={imgTmp} alt="" /></li></ul></div></div>
 			], 
 			slideWidth: slideWidth, 
@@ -80,16 +92,17 @@ export const projects: Array<IMainProject> = [
 				}, 
 			], 
 			corp: '서울이동통신', 
-			link: 'https://say015.com', 
+			links: [
+				'* https://say015.com', 
+			], 
 		}
 	}, 
 	
 	{
 		sliderProps: {
 			items: [
-				<img src={imgTmpGif} alt="" />, 
-				<img src={imgTmp} alt="" />, 
-				<div>3</div>, 
+				<img src={career02onuii1} alt="" />, 
+				<img src={career02onuii2} alt="" />, 
 			], 
 			slideWidth: slideWidth, 
 			slideHeight: slideHeight, 
@@ -115,16 +128,22 @@ export const projects: Array<IMainProject> = [
 				}, 
 			], 
 			corp: '오누이', 
-			link: 'https://www.seoltab.com/seoltab_review', 
+			links: [
+				'https://www.seoltab.com/seoltab_review', 
+			], 
 		}
 	}, 
 
 	{
 		sliderProps: {
 			items: [
-				<img src={imgTmpGif} alt="" />, 
-				<img src={imgTmp} alt="" />, 
-				<div>3</div>, 
+				<img src={career01sjw1} alt="" />, 
+				<img src={career01sjw2} alt="" />, 
+				<img src={career01sjw3} alt="" />, 
+				<img src={career01sjw4} alt="" />, 
+				<img src={career01sjw5} alt="" />, 
+				<img src={career01sjw6} alt="" />, 
+				<img src={career01sjw7} alt="" />, 
 			], 
 			slideWidth: slideWidth, 
 			slideHeight: slideHeight, 
@@ -150,8 +169,11 @@ export const projects: Array<IMainProject> = [
 				}, 
 			], 
 			corp: '에스제이더블유인터내셔널', 
-			link: 'https://lab.siwonschool.com/', 
-			// link: 'https://www.siwonschool.com/?s=event&t=160318', 
+			links: [
+				'https://lab.siwonschool.com/', 
+				'* https://welearn.siwonschool.com/', 
+				'https://www.siwonschool.com/?s=event&t=160318', 
+			]
 		}
 	}, 
 

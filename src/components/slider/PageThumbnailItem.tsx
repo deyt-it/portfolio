@@ -2,6 +2,7 @@ import { forwardRef, useEffect, useState } from 'react';
 import { IPageThumbnailItemProps as IProps } from './ISlider';
 import { toJpeg } from 'html-to-image';
 import Loading from '../Loading';
+import { MdPlayCircleFilled } from "react-icons/md";
 
 export default forwardRef(function PaginationItem(
 	{id, isActive, onClick, quality=0.25}: IProps, 
@@ -10,10 +11,11 @@ export default forwardRef(function PaginationItem(
 ){
 	const [isLoading, setIsLoading] = useState(true)
 	const [thumbnailUrl, setThumbnailUrl] = useState("")
+	const [isVideo, setIsVideo] = useState(false)
 	
 	
 	useEffect(()=>{
-		console.log('[PageThumbnailItem]', thumbnailUrl, ref);
+		// console.log('[PageThumbnailItem]', ref);
 		
 		if (thumbnailUrl === '' && ref) {
 			toJpeg(ref, {cacheBust: true, quality: quality})
@@ -25,6 +27,10 @@ export default forwardRef(function PaginationItem(
 				console.log(e);
 			})
 		}
+
+		if (ref && ref.children[0].tagName === 'IMG') {
+			setIsVideo(ref.children[0].src.split('.').reverse()[0] === 'gif')
+		}
 	}, [ref])
 	
 	return(
@@ -33,6 +39,10 @@ export default forwardRef(function PaginationItem(
 				isLoading
 					? <Loading />
 					: <img src={thumbnailUrl} alt="" />
+			}
+			{
+				isVideo &&
+					<MdPlayCircleFilled className="ico" />
 			}
 		</li>
 	)

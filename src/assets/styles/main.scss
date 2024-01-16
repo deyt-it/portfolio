@@ -5,42 +5,70 @@
 	padding-bottom: 100px;
 	color: #333;
 	
+	a{
+		text-decoration: underline;
+	}
 	h2{
-		padding-top: 50px;
-		font-size: 36px;
+		font-size: 40px;
 		font-weight: bold;
 	}
-
+	
 	.personal-info{
+		padding-top: 78px;
+
+		&>ul{
+			padding-top: 44px;
+
+			&>li{
+				display: grid;
+				grid-template-columns: 155px 1fr;
+
+				&:not(:first-child){
+					margin-top: 20px;
+				}
+	
+				.title{
+					font-size: 20px;
+					font-weight: bold;
+				}
+				.content{
+					font-size: 18px;
+				}
+			}
+		}
 	} //personal-info
 	.career{
 		position: relative;
+		padding-top: 155px;
 		
-		section{
-			display: flex;
-			padding-right: 95px;
-			padding-top: 150px;
-		}
-		section:not(section +section){
-			padding-top: 34px;
-		}
-		.slider-area{
-			// width: 545px; //Slider컴포넌트에 props로 넘김
-			.bullets{
-				display: none;
-			}
-			.thumbnails{
+		.projects{
+			padding-right: 30px;
+			
+			section{
 				display: flex;
+				padding-top: 150px;
 			}
-		}
-		.project-desc-area{
-			flex:1 1 auto;
-			padding-left: 50px;
-			padding-top: 8px;
+			section:not(section +section){
+				padding-top: 34px;
+			}
+			.slider-area{
+				// width: 545px; //Slider컴포넌트에 props로 넘김
+				.bullets{
+					display: none;
+				}
+				.thumbnails{
+					display: flex;
+				}
+			}
+			.project-desc-area{
+				flex:1 1 auto;
+				padding-left: 50px;
+				padding-top: 8px;
+			}
 		}
 		.timeline-rail{
 			position: absolute;
-			right:0;top:0;
+			right:-80px;top:0;
 			height: 100%;
 
 			.timeline-box{
@@ -52,7 +80,7 @@
 				// 첫번째 section의 높이값
 				// ㄴ timeline의 처음위치를 section영역 하단에 맞춰줌
 				height: 90vh;
-				max-height: 624px;
+				// max-height: 624px;
 			}
 		}
 
@@ -110,24 +138,46 @@
 			.refs{
 				margin-top: 40px;
 				li{
-					display: flex;
-					align-items: center;
+					&:not(.link){
+						display: flex;
+						align-items: center;
+					}
 					&:not(:first-child) {margin-top: 4px;}
 					font-size: 15px;
+
 					.ico{
 						padding-right: 4px;
 						font-size: 16px;
 						color: #929292;
-		
-						&.link{
-							margin-top: 2px;
-						}
 					}
 					a{
 						font-size: 14px;
 						color: $blue;
-						text-decoration: underline;
 					}
+					.inactive{
+						color: $gray200;
+						.ico{
+							color: $gray200;
+						}
+					}
+					
+					&.link{
+						p{
+							display: flex;
+							align-items: center;
+							.ico{
+								margin-top: 2px;
+							}
+
+							&.inactive{
+								span{
+									padding-right: 4px;
+									text-decoration: underline;
+								}
+							}
+						}
+					}
+
 				}
 			}
 		} //project-desc
@@ -170,7 +220,13 @@
 			li:nth-child(even){
 				text-align: right;
 			}
-			li.on{
+			li.on, li:hover{
+				color: $blue;
+				&::before{
+					background-color: $blue;
+				}
+			}
+			li.on.point{
 				&::before{
 					animation: dimming 1.4s infinite linear;
 				}
@@ -183,27 +239,21 @@
 					}
 				}
 			}
-			li.on, li:hover{
-				color: $blue;
-				&::before{
-					background-color: $blue;
-				}
-			}
 			li.on +li.on{ //범위 표현
 				&::after{
 					background-color: $blue;
 				}
 			}
 			li.off{
-				color: #e6e6e6;
+				color: $gray100;
 				cursor: default;
 				&::before{
-					background-color: #e6e6e6;
+					background-color: $gray100;
 				}
 			}
 			li.off +li.off{ //범위 표현
 				&::after{
-					background-color: #e6e6e6;
+					background-color: $gray100;
 				}
 			}
 		} // timeline
@@ -220,21 +270,23 @@
 		.personal-info{
 		} //personal-info
 		.career{
-			section{
-				flex-wrap: wrap;
-				// justify-content: center;
-			}
-			.slider-area{
-				.bullets{
-					display: flex;
+			.projects{
+				section{
+					flex-wrap: wrap;
+					// justify-content: center;
 				}
-				.thumbnails{
-					display: none;
+				.slider-area{
+					.bullets{
+						display: flex;
+					}
+					.thumbnails{
+						display: none;
+					}
 				}
-			}
-			.project-desc{
-				padding-top: 30px;
-				padding-left: 0;
+				.project-desc{
+					padding-top: 30px;
+					padding-left: 0;
+				}
 			}
 			.timeline-rail{
 				display: none;

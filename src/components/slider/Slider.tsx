@@ -78,7 +78,7 @@ export default function Slider({
 			const slideRefsBackup: RefObject<Array<HTMLElement|null>> = useRef([])
 			// ref callback 함수. 썸네일 생성에 필요
 			const onRefUpdate = (node: HTMLElement|null, indexUpdated: number, hasImg: boolean)=>{
-				console.log('onSlideRefUpdate', node , indexUpdated);
+				// console.log('onSlideRefUpdate', node , indexUpdated);
 
 				if (!slideRefs.current[indexUpdated] && node) {
 					// 해당ref에 이미지 없을시 ref값 setState
@@ -95,7 +95,7 @@ export default function Slider({
 				}
 			}
 			const onSlideImgLoad = (indexUpdated: number) => {
-				console.log('onSlideImgLoad', slideRefsBackup);
+				// console.log('onSlideImgLoad', slideRefsBackup);
 				if (!slideRefs.current[indexUpdated]) {
 					// 이미지 로드완료시 부모li의 ref값을 setState
 					setSlideRefs(prev => {
@@ -124,6 +124,7 @@ export default function Slider({
 				attrs.ref = (node: HTMLElement|null)=> {
 					onRefUpdate(node, i, itemSettedOnLoad ? true: false)
 				}
+				attrs.className = 'test'+i
 	
 				return <li key={i} {...attrs}>{item}</li>
 			})
@@ -137,15 +138,15 @@ export default function Slider({
 		return (
 			<>
 			{/* 마지막 슬라이드를 앞에, 첫번째 슬라이드를 뒤에 붙이고 시작합니다 */}
-			<li {...attrs}>{items[itemLength-1]}</li>
+			<li style={{width: slideWidth}}>{items[itemLength-1]}</li>
 			{ slides }
-			<li {...attrs}>{items[0]}</li>
+			<li style={{width: slideWidth}}>{items[0]}</li>
 			</>
 		)
 	}, [items])
 	
 	const renderPagination = (type: TPaginationType) => {
-		console.log('renderPagination', type, slideRefs);
+		// console.log('renderPagination', type, slideRefs);
 
 		const getCommonProps = (indexPage: number) => {
 			// 페이지네이션(bullet, thumbnail)에 넘길 공통 props

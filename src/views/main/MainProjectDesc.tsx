@@ -8,7 +8,7 @@ export interface IMainProjectDesc {
 	technologies: Array<string>, 
 	details: Array<IDetail>, 
 	corp: string, 
-	link?: string, 
+	links?: Array<string>, 
 }
 interface IPeriod {
 	start: Date, 
@@ -59,11 +59,23 @@ export default function MainProjectDesc(props: IMainProjectDesc){
 					<RiBuildingLine className="ico" />
 					{props.corp}
 				</li>
-				<li>
-					<FiLink2 className="ico link" />
-					<a href={props.link} target="_blank">
-						{props.link}
-					</a>
+				<li className='link'>
+				{
+					props.links &&
+						props.links.map((link, i) => 
+							link.split(' ')[0] === '*'
+							? <p key={i} className='inactive'>
+								<FiLink2 className="ico" />
+								<span>{link.split(' ')[1]}</span> (서비스 중단)
+							</p>
+							: <p key={i}>
+								<FiLink2 className="ico" />
+								<a href={link} target="_blank">
+									{link}
+								</a>
+							</p>
+						)
+				}
 				</li>
 			</ul>
 		</div>

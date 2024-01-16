@@ -10,7 +10,7 @@ interface IScrollInfo {
 }
 
 export default forwardRef(function MainTimeline({startYear}: any, ref: any){
-	console.log('[MainTimeline]', ref);
+	// console.log('[MainTimeline]', ref);
 	const targetRefs = ref //timeline클릭시 이동할 element들. 순서보장(연도 내림차순)
 	const {height: windowH} = useWindowDimensions()
 	const timelineRef: any = useRef(null)
@@ -66,7 +66,6 @@ export default forwardRef(function MainTimeline({startYear}: any, ref: any){
 	})
 	
 	const renderTimelineItems = () => {
-		// console.log('window.scrollY:', window.scrollY, scrollInfos);
 		const currentYear = new Date().getFullYear()
 		
 		const getAttrs = (year: number) => {
@@ -78,6 +77,13 @@ export default forwardRef(function MainTimeline({startYear}: any, ref: any){
 				&& year <= currScrollInfo.endYear
 			) {
 				attrs.className = 'on'
+				
+				if (
+					year === currScrollInfo.startYear
+					|| year === currScrollInfo.endYear
+				) {
+					attrs.className += ' point'
+				}
 			}
 
 			// 클릭이벤트 등록
@@ -116,8 +122,6 @@ export default forwardRef(function MainTimeline({startYear}: any, ref: any){
 			// 현 스크롤위치가 설정범위를 벗어날 시 범위 재설정 (스크롤정보 업데이트)
 			const direction = window.scrollY - currScrollInfo.scrollTop < 0 ? -1 : 1
 			setCurrScrollInfo(scrollInfos[currScrollInfo.index + direction])
-
-			console.log(1, direction, window.scrollY, currScrollInfo.scrollTop, currScrollInfo.scrollBottom);
 			
 		}
 	};
@@ -127,21 +131,26 @@ export default forwardRef(function MainTimeline({startYear}: any, ref: any){
 		return () => {
 			window.removeEventListener('scroll', onScroll);
 		};
-	}, []);
+	}, [currScrollInfo]);
 	
 	useEffect(()=>{
 		// 현 스크롤위치 범위에 해당하는 아이템 활성화
-		if (currScrollInfo) {
-			console.log(2, currScrollInfo.startYear, currScrollInfo.endYear);
-			Array.from(timelineRef.current!.children).forEach((item: any) => {
-				const itemDataYear = Number(item.dataset.year)
-				if (itemDataYear >= currScrollInfo.startYear && itemDataYear <= currScrollInfo.endYear) {
-					item.classList.add('on')
-				}else{
-					item.classList.remove('on')
-				}
-			})
-		}
+		// if (currScrollInfo) {
+		// 	Array.from(timelineRef.current!.children).forEach((item: any) => {
+		// 		const itemDataYear = Number(item.dataset.year)
+		// 		if (itemDataYear >= currScrollInfo.startYear && itemDataYear <= currScrollInfo.endYear) {
+		// 			item.classList.add('on')
+		// 		}else{
+		// 			item.classList.remove('on')
+		// 		}
+		// 	})
+		// }
+		// 스크롤이벤트 재등록
+		// ㄴ 콜백함수에 스크롤정보 상태값을 사용하기 때문에
+		window.addEventListener('scroll', onScroll, { passive: true });
+		return () => {
+			window.removeEventListener('scroll', onScroll);
+		};
 	}, [currScrollInfo])
 	
 	return (

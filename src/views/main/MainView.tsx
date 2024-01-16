@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { projects } from './MainProjects';
 import Slider from '../../components/slider/Slider';
 import MainProjectDesc from './MainProjectDesc';
@@ -7,7 +7,7 @@ import '../../assets/styles/main.scss';
 
 
 export default function MainView(){
-	const projectRefs: RefObject<Array<HTMLElement|null>> = useRef([])
+	const projectRefs = useRef<Array<HTMLElement|null>>([])
 	const onProjectRefUpdate = useCallback((node: HTMLElement|null, indexUpdated: number) => {
 		projectRefs.current![indexUpdated] = node
 	}, [])
@@ -26,16 +26,37 @@ export default function MainView(){
 
 	return (
 		<div className="main-container">
-			<h2>
-				타이틀입니다.<br />
-				두 줄이에요
-			</h2>
 			<article className='personal-info'>
-				<div style={{height: '275px', backgroundColor: 'pink'}}>tmp</div>
+				<h2>
+					공부를 놓지 않는 개발자<br />
+					김지연 입니다.
+				</h2>
+				<ul>
+					<li>
+						<p className="title">GitHub</p>
+						<p className="content">
+							<a href="https://github.com/deyt-it/portfolio" target="_blank">
+								https://github.com/deyt-it/portfolio
+							</a>
+						</p>
+					</li>
+					<li>
+						<p className="title">E-mail</p>
+						<p className="content">
+							deyt.it02@gmail.com
+						</p>
+					</li>
+					<li>
+						<p className="title">Contact</p>
+						<p className="content">
+							010-5521-6740
+						</p>
+					</li>
+				</ul>
 			</article>
 
-			<h2>Career</h2>
 			<article className="career">
+				<h2>Career</h2>
 				<div className="projects">
 				{
 					projects.map((item, i) => {
@@ -56,7 +77,7 @@ export default function MainView(){
 				</div>
 
 				<div className="timeline-rail">
-				<div className="timeline-box">
+				<div className="timeline-box" style={{maxHeight: projectRefs.current[0]?.offsetHeight}}>
 					{
 						isAllProjectRefsUpdated &&
 							<MainTimeline {...timelineProps} ref={projectRefs} />
