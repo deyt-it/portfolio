@@ -21,8 +21,8 @@ interface IMainProject {
 	sliderProps: ISliderProps, 
 	projectDescProps: IMainProjectDesc, 
 }
-const slideWidth = '545px';
-const slideHeight = '330px';
+const slideWidth = '560px';
+const slideHeight = '350px';
 
 export const projects: Array<IMainProject> = [
 	{
@@ -37,7 +37,7 @@ export const projects: Array<IMainProject> = [
 		projectDescProps: {
 			period: {
 				start: new Date('2022-04-01'), 
-				end: new Date('2022-09-01'), 
+				end: new Date('2022-10-01'), 
 			}, 
 			technologies: ['HTML5', 'Sass(SCSS)', 'ReactJS', 'd3'], 
 			details: [
@@ -109,8 +109,8 @@ export const projects: Array<IMainProject> = [
 		}, 
 		projectDescProps: {
 			period: {
-				start: new Date('2020-09-01'), 
-				end: new Date('2021-02-01'), 
+				start: new Date('2020-06-01'), 
+				end: new Date('2021-03-01'), 
 			}, 
 			technologies: ['HTML5', 'Sass(SCSS)', 'ReactJS', 'ES6', 'Axios', 'Responsive Web'], 
 			details: [
