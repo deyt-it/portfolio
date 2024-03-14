@@ -1,11 +1,9 @@
-# Frontend Portfolio
-
+# Frontend Portfolio   
 ## About
 
 - 기여도 : 100%
-- 이력서에 기재된 참여 서비스의 이미지 및 링크를 기록해둔 페이지입니다.
+- 이력서에 기재된 참여 서비스의 이미지 및 링크를 기록해둔 페이지입니다. 
    중단된 서비스의 경우, 시연 영상으로 대체합니다.
-
 
 ## Link
 <https://deyt-it.github.io/portfolio/>
@@ -36,7 +34,7 @@
 2. 화면 목업
 ![포트폴리오 구현과정02 페이지 목업](https://github.com/deyt-it/portfolio/assets/47001575/e7530d3a-c23c-4b13-9ffa-42a805c4d89c)
 
-3. 일정 산출
+3. 일정 산출 
 ![포트폴리오 구현과정03 일정산출](https://github.com/deyt-it/portfolio/assets/47001575/aee82c6f-5d42-48d2-9a3a-a2e14bd3abf1)
 
 4. 구현
