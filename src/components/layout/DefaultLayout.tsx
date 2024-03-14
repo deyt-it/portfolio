@@ -1,9 +1,10 @@
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 export default DefaultLayout
 
 
-function DefaultLayout({children}: any){
+function DefaultLayout({children}: {children: ReactNode}){
 
 	return (
 		<StyledWrap>
